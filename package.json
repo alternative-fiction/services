@@ -20,6 +20,7 @@
   "dependencies": {
     "babel-cli": "6.4.5",
     "babel-register": "6.4.3",
+    "colors": "1.1.2",
     "good": "6.4.0",
     "good-console": "5.2.0",
     "good-file": "5.1.1",

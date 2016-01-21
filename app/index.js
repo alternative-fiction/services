@@ -1,4 +1,5 @@
 import "babel-polyfill"
+import "colors"
 
 import {Server} from "hapi"
 import routes from "./routes"
@@ -18,9 +19,9 @@ module.exports = function init() {
     if (error) throw error
 
     server.start(() => {
-      console.log("\n\n\n===========")
+      console.log("\n\n\n===========".rainbow)
       console.log(`${(new Date()).toLocaleTimeString()}: Our story begins at ${server.info.uri}`)
-      console.log("===========\n\n\n")
+      console.log("===========\n\n\n".rainbow)
     })
   })
 }
