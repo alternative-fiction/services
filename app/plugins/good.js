@@ -7,7 +7,7 @@ export default {
       events: {log: "*", response: "*"}
     }, {
       reporter: require("good-file"),
-      events: {ops: "*"},
+      events: {log: "*", response: "*"},
       config: "./tmp/logs.txt"
     }]
   }
