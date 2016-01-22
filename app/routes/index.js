@@ -1,5 +1,4 @@
 import heartbeat from "./heartbeat"
+import stories from "./stories"
 
-export default [
-  heartbeat
-]
+export default [].concat([heartbeat], stories)

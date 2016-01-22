@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "db:reset": "babel-node scripts/reset-database.js && knex migrate:latest",
-    "start": "supervisor -q scripts/watch.js"
+    "start": "node scripts/watch.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
     "good-console": "5.2.0",
     "good-file": "5.1.1",
     "hapi": "12.1.0",
-    "hapi-bookshelf-models": "1.6.0",
+    "hapi-bookshelf-serializer": "2.1.0",
+    "hapi-boom-decorators": "1.1.2",
     "hapi-node-postgres": "3.0.1",
     "pg": "4.4.3",
     "pgtools": "0.0.2"

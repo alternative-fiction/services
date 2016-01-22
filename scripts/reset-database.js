@@ -1,9 +1,7 @@
 import pgtools from "pgtools"
 import environments from "../knexfile"
 
-const {database, password, user} = environments[process.env.AF_ENV || "development"].connection
-const host = "localhost"
-const port = 5432
+const {database, host, password, port, user} = environments[process.env.AF_ENV || "development"].connection
 const log = console.log.bind(console)
 
 log(`Dropping database ${database}`)
