@@ -8,6 +8,7 @@ module.exports = {
       port: 5432,
       user: "af_services"
     },
+    debug: true,
     pool: {
       min: 2,
       max: 10
