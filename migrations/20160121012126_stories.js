@@ -2,10 +2,8 @@
 
 exports.up = function(knex) {
   return knex.schema.createTable("stories", t => {
-    t.increments()
-
     t.string("uuid", 12)
-      .unique()
+      .primary()
       .notNullable()
       .index()
 

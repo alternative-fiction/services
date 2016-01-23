@@ -4,7 +4,7 @@ import uniqueId from "../lib/unique-id"
 const baseModel = bookshelf.Model.extend({
   hasTimestamps: ["createdAt", "updatedAt"],
   initialize() {
-    this.set("uuid", uniqueId(12))
+    this.on("creating", model => model.set("uuid", uniqueId(12)))
   }
 })
 

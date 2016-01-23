@@ -2,9 +2,7 @@ import {registerModel} from "../lib/bookshelf"
 import {createModel} from "./base"
 
 export default registerModel("Story", createModel({
-  initialize(attributes) {
-    this.set(attributes)
-  },
+  idAttribute: "uuid",
   serialize() {
     return {
       body: this.get("body") || "",
