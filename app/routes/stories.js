@@ -36,10 +36,26 @@ export default [
     method: "POST",
     path: "/stories",
     handler({payload}, reply) {
-      new Story(payload.story)
+      const {story} = payload || {}
+
+      new Story(story)
         .save()
         .then(record => reply(record))
-        .catch(Story.NoRowsUpdatedError, () => reply.badRequest())
+        .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
+        .catch(error => {
+          console.error(error)
+          reply.boom(500, error)
+        })
+    }
+  },
+  {
+    method: "DELETE",
+    path: "/stories/{uuid}",
+    handler({params: {uuid}}, reply) {
+      new Story({uuid})
+        .destroy({require: true})
+        .then(() => reply().code(204))
+        .catch(Story.NoRowsDeletedError, () => reply.notFound())
         .catch(error => {
           console.error(error)
           reply.boom(500, error)
