@@ -7,7 +7,7 @@ const index = {
   path: "/stories",
   handler({params}, reply) {
     new Stories()
-      .query(qb => qb.where({published: false}).orderBy("updatedAt"))
+      .query(qb => qb.orderBy("updatedAt", "desc"))
       .fetch({
         columns: ["createdAt", "description", "title", "updatedAt", "uuid"]
       })
