@@ -4,6 +4,7 @@
   "description": "The backend to Alternative Fiction",
   "main": "index.js",
   "scripts": {
+    "db:migrate": "knex migrate:latest",
     "db:reset": "babel-node scripts/reset-database.js && knex migrate:latest",
     "lint:fix": "eslint --fix .",
     "start": "babel-node scripts/watch.js",

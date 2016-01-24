@@ -10,7 +10,7 @@ const server = new Server()
 
 server.connection({
   host: "localhost",
-  port: 9001,
+  port: process.env.PORT || 9001,
   routes: {
     cors: true
   }
