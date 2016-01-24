@@ -1,1 +1,1 @@
-web: node build/watch.js
+web: node build/web.js
