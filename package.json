@@ -23,6 +23,7 @@
   "homepage": "https://github.com/alternative-fiction/services#readme",
   "dependencies": {
     "babel": "6.3.26",
+    "babel-cli": "6.4.5",
     "babel-preset-es2015": "6.3.13",
     "babel-preset-stage-0": "6.3.13",
     "babel-runtime": "6.3.19",
@@ -41,7 +42,6 @@
     "pgtools": "0.0.2"
   },
   "devDependencies": {
-    "babel-cli": "6.4.5",
     "babel-eslint": "5.0.0-beta6",
     "babel-register": "6.4.3",
     "code": "2.1.0",
