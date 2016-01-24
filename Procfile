@@ -1,1 +1,1 @@
-web: node build/web.js
+web: npm run start:production
