@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix .",
     "postinstall": "babel --source-maps inline --out-dir build/ ./app",
     "start": "babel-node app/web.js",
-    "start:production": "pm2 start build/web.js",
+    "start:production": "node build/pm2.js",
     "stop:production": "pm2 stop all",
     "test": "NODE_ENV=test eslint . && lab -T node_modules/lab-babel -l -t 100 -S tests/**/*.js"
   },
