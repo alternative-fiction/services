@@ -9,8 +9,8 @@ import plugins from "./plugins"
 const server = new Server()
 
 server.connection({
-  host: "localhost",
-  port: process.env.PORT || 9001,
+  host: "0.0.0.0",
+  port: parseInt(process.env.PORT, 10) || 9001,
   routes: {
     cors: true
   }
