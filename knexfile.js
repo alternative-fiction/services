@@ -18,6 +18,25 @@ module.exports = {
     }
   },
 
+  test: {
+    client: "postgresql",
+    connection: {
+      database: "af_test",
+      host: "localhost",
+      password: "af",
+      port: 5432,
+      user: "af_services"
+    },
+    debug: true,
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: "knex_migrations"
+    }
+  },
+
   staging: {
     client: "postgresql",
     connection: {

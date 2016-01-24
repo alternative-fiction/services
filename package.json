@@ -7,7 +7,7 @@
     "db:reset": "babel-node scripts/reset-database.js && knex migrate:latest",
     "lint:fix": "eslint --fix .",
     "start": "babel-node scripts/watch.js",
-    "test": "eslint . && lab -T node_modules/lab-babel -l -t 100 -S tests/**/*.js"
+    "test": "NODE_ENV=test eslint . && lab -T node_modules/lab-babel -l -t 100 -S tests/**/*.js"
   },
   "repository": {
     "type": "git",

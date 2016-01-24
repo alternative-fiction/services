@@ -1,7 +1,7 @@
 import environments from "../../knexfile"
 import uniqueId from "../lib/unique-id"
 
-const {connection} = environments[process.env.AF_ENV || "development"]
+const {connection} = environments[process.env.NODE_ENV || "development"]
 
 export default {
   register: require("hapi-bookshelf-models"),
