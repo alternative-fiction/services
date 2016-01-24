@@ -9,6 +9,7 @@
 /tmp
 /dist/**/*
 node_modules/**/*
+build/**/*
 
 # Credentials.
 config/aws.json

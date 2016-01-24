@@ -1,4 +1,4 @@
-import server from "../app"
+import server from "./index"
 
 server.start(error => {
   if (error) throw error
