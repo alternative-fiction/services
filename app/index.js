@@ -19,9 +19,4 @@ server.register(plugins, error => {
   if (error) throw error
 })
 
-server.initialize(error => {
-  if (error) throw error
-  console.log("Initialized")
-})
-
 export default server
