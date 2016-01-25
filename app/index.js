@@ -15,7 +15,7 @@ server.connection({
   routes: {
     cors: true,
     files: {
-      relativeTo: path.join(__dirname, "../public")
+      relativeTo: path.join(__dirname, "public")
     }
   }
 })
