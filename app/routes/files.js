@@ -1,9 +1,7 @@
 export default [{
   method: "GET",
-  path: "/{param*}",
-  handler: {
-    directory: {
-      path: "."
-    }
+  path: "/{filename*}",
+  handler({params: {filename}}, reply) {
+    reply.file(filename)
   }
 }]
