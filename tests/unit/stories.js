@@ -1,6 +1,7 @@
 import Lab from "lab"
 import Code from "code"
 import server from "../../app"
+import uniqueId from "../../app/lib/unique-id"
 
 const lab = exports.lab = Lab.script()
 
@@ -65,6 +66,19 @@ lab.experiment("Stories", () => {
       Code.expect(statusCode).to.equal(200)
 
       Code.expect(result.body).to.equal(options.payload.story.body)
+
+      server.stop(done)
+    })
+  })
+
+  lab.test("Retrieve (error)", done => {
+    const options = {
+      method: "GET",
+      url: `/stories/${uniqueId()}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      Code.expect(statusCode).to.equal(404)
 
       server.stop(done)
     })
