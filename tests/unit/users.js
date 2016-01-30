@@ -2,14 +2,16 @@ import Lab from "lab"
 import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
+import Chance from "chance"
 
+const chance = new Chance()
 const lab = exports.lab = Lab.script()
 
 const user = {
   bio: "A great writer",
-  email: "foo@bar.baz",
-  password: "foobar",
-  username: "Testerson"
+  email: chance.email(),
+  password: chance.word({length: 10}),
+  username: `test-user-${chance.word({length: 10})}`
 }
 
 lab.experiment("Users", () => {
@@ -27,6 +29,7 @@ lab.experiment("Users", () => {
 
       uuid = result.uuid
 
+      Code.expect(result.username).to.equal(user.username)
       Code.expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
@@ -42,6 +45,7 @@ lab.experiment("Users", () => {
     server.inject(options, ({statusCode, result}) => {
       Code.expect(statusCode).to.equal(200)
 
+      Code.expect(result.username).to.equal(user.username)
       Code.expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
