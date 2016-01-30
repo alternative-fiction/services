@@ -2,13 +2,22 @@ import Lab from "lab"
 import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
+import Chance from "chance"
 
+const chance = new Chance()
 const lab = exports.lab = Lab.script()
 
 const story = {
-  body: "In the beginning...",
-  description: "A good description",
-  title: "A few good tests"
+  body: chance.paragraph({sentences: 50}),
+  description: chance.sentence(),
+  title: chance.sentence(),
+  meta: {
+    tags: [
+      chance.word(),
+      chance.word(),
+      chance.word()
+    ]
+  }
 }
 
 lab.experiment("Stories", () => {
@@ -30,6 +39,8 @@ lab.experiment("Stories", () => {
       Code.expect(result.description).to.equal(story.description)
       Code.expect(result.title).to.equal(story.title)
 
+      story.meta.tags.forEach((tag, i) => Code.expect(result.meta.tags[i]).to.equal(tag))
+
       server.stop(done)
     })
   })
@@ -47,6 +58,8 @@ lab.experiment("Stories", () => {
       Code.expect(result.description).to.equal(story.description)
       Code.expect(result.title).to.equal(story.title)
 
+      story.meta.tags.forEach((tag, i) => Code.expect(result.meta.tags[i]).to.equal(tag))
+
       server.stop(done)
     })
   })
@@ -56,7 +69,7 @@ lab.experiment("Stories", () => {
       method: "PUT",
       payload: {
         story: {
-          body: "updated body"
+          body: chance.paragraph({sentences: 50})
         }
       },
       url: `/stories/${uuid}`

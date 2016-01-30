@@ -10,17 +10,16 @@ exports.up = function(knex) {
     t.text("body", "longtext")
       .notNullable()
       .defaultTo("")
-      .index()
+
+    t.json("meta")
 
     t.string("description")
       .notNullable()
       .defaultTo("")
-      .index()
 
     t.string("title")
       .notNullable()
       .defaultTo("")
-      .index()
 
     t.boolean("published")
       .notNullable()
