@@ -30,6 +30,7 @@
     "babel-preset-stage-0": "6.3.13",
     "babel-runtime": "6.3.19",
     "bookshelf": "0.9.1",
+    "bookshelf-secure-password": "1.0.1",
     "colors": "1.1.2",
     "good": "6.4.0",
     "good-console": "5.2.0",
