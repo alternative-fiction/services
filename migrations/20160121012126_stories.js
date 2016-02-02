@@ -34,7 +34,24 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo(knex.fn.now())
       .index()
-  })
+
+    t.specificType("tsv", "tsvector")
+      .index("tsv_index", "gin")
+  }).raw(`
+    CREATE FUNCTION documents_search_trigger() RETURNS trigger AS $$
+      begin
+        new.tsv :=
+          setweight(to_tsvector(coalesce(new.description, '')), 'A') ||
+          setweight(to_tsvector(coalesce(new.meta->>'tags', '')), 'A') ||
+          setweight(to_tsvector(coalesce(new.title, '')), 'B') ||
+          setweight(to_tsvector(coalesce(new.body, '')), 'D');
+        return new;
+      end
+      $$ LANGUAGE plpgsql;
+
+      CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
+      ON stories FOR EACH ROW EXECUTE PROCEDURE documents_search_trigger();
+  `)
 }
 
 exports.down = knex => {

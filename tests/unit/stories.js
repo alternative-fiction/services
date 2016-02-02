@@ -8,7 +8,7 @@ const chance = new Chance()
 const lab = exports.lab = Lab.script()
 
 const story = {
-  body: chance.paragraph({sentences: 50}),
+  body: chance.paragraph({sentences: 10}),
   description: chance.sentence(),
   title: chance.sentence(),
   meta: {

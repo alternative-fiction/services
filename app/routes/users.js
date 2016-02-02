@@ -32,7 +32,6 @@ const create = {
   handler({payload}, reply) {
     const {user} = payload || {}
 
-    console.log("hello", User)
     new User(user)
       .save()
       .then(reply)
