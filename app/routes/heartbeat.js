@@ -1,19 +1,15 @@
-function handler(request, reply) {
-  return reply({
-    message: `${(new Date()).toLocaleTimeString()}: Still alive :)`,
-    statusCode: 200
-  })
+const heartbeat = {
+  config: {auth: false},
+  handler(request, reply) {
+    return reply({
+      message: `${(new Date()).toLocaleTimeString()}: Still alive :)`,
+      statusCode: 200
+    })
+  },
+  method: "GET",
+  path: "/"
 }
 
 export default [
-  {
-    handler,
-    method: "GET",
-    path: "/"
-  },
-  {
-    handler,
-    method: "GET",
-    path: "/heartbeat"
-  }
+  heartbeat
 ]

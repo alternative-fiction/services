@@ -8,7 +8,7 @@ lab.experiment("Basic HTTP Tests", () => {
   lab.test("JSON health check", done => {
     const options = {
       method: "GET",
-      url: "/heartbeat"
+      url: "/"
     }
 
     server.inject(options, ({statusCode}) => {
