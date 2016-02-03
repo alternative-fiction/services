@@ -1,13 +1,15 @@
 import files from "./files"
 import heartbeat from "./heartbeat"
+import search from "./search"
+import session from "./session"
 import stories from "./stories"
 import users from "./users"
-import search from "./search"
 
 export default [].concat(
+  files,
   heartbeat,
-  stories,
   search,
-  users,
-  files
+  session,
+  stories,
+  users
 )
