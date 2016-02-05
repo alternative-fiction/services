@@ -1,9 +1,10 @@
 import server from "./index"
+import log from "./lib/log"
 
 server.start(error => {
   if (error) throw error
 
-  console.log("\n\n===========".green)
-  console.log(`${(new Date()).toLocaleTimeString()}: Listening at ${server.info.uri}`)
-  console.log("===========\n\n".blue)
+  log("===========".green)
+  log(`Listening at ${server.info.uri}`)
+  log("===========\n\n".blue)
 })
