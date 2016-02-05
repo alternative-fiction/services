@@ -2,19 +2,13 @@ import Lab from "lab"
 import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
-import Chance from "chance"
+import createMockUser from "../mocks/user"
 
-const chance = new Chance()
 const lab = exports.lab = Lab.script()
-
-const user = {
-  bio: "A great writer",
-  email: chance.email(),
-  password: chance.word({length: 10}),
-  username: `test-user-${chance.word({length: 10})}`
-}
+const user = createMockUser()
 
 lab.experiment("Users", () => {
+  let authorization
   let uuid
 
   lab.test("Create", done => {
@@ -24,10 +18,12 @@ lab.experiment("Users", () => {
       url: "/users"
     }
 
-    server.inject(options, ({statusCode, result}) => {
+    server.inject(options, ({headers, result, statusCode}) => {
       Code.expect(statusCode).to.equal(200)
+      Code.expect(headers.authorization).to.exist()
 
       uuid = result.uuid
+      authorization = headers.authorization
 
       Code.expect(result.username).to.equal(user.username)
       Code.expect(result.bio).to.equal(user.bio)
@@ -42,7 +38,7 @@ lab.experiment("Users", () => {
       url: `/users/${uuid}`
     }
 
-    server.inject(options, ({statusCode, result}) => {
+    server.inject(options, ({result, statusCode}) => {
       Code.expect(statusCode).to.equal(200)
 
       Code.expect(result.username).to.equal(user.username)
@@ -54,6 +50,7 @@ lab.experiment("Users", () => {
 
   lab.test("Update", done => {
     const options = {
+      headers: {authorization},
       method: "PUT",
       payload: {
         user: {
@@ -63,10 +60,24 @@ lab.experiment("Users", () => {
       url: `/users/${uuid}`
     }
 
-    server.inject(options, ({statusCode, result}) => {
+    server.inject(options, ({result, statusCode}) => {
       Code.expect(statusCode).to.equal(200)
 
       Code.expect(result.bio).to.equal(options.payload.user.bio)
+
+      server.stop(done)
+    })
+  })
+
+  lab.test("Destroy", done => {
+    const options = {
+      headers: {authorization},
+      method: "DELETE",
+      url: `/users/${uuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      Code.expect(statusCode).to.equal(204)
 
       server.stop(done)
     })

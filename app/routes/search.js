@@ -2,6 +2,7 @@ import unknownError from "../lib/unknown-error"
 import {knex} from "../lib/bookshelf"
 
 export default [{
+  config: {auth: false},
   method: "POST",
   path: "/search",
   handler({payload}, reply) {

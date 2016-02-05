@@ -1,9 +1,14 @@
 import User from "../models/user"
+import createRedisClient from "redis-connection"
 import unknownError from "../lib/unknown-error"
+import {createAuth} from "../config/auth"
 
-const create = {
+const redisClient = createRedisClient()
+
+const auth = {
+  config: {auth: false},
   method: "POST",
-  path: "/session",
+  path: "/auth",
   handler({payload}, reply) {
     const password = (payload.password || "").trim()
     const email = (payload.email || "").trim()
@@ -15,13 +20,26 @@ const create = {
       .then(user => {
         if (!user.authenticate(password)) return reply.unauthorized()
 
-        reply(user)
+        const {session, token} = createAuth(user)
+
+        redisClient.set(session.uuid, JSON.stringify(session))
+        reply(user).header("Authorization", token)
       })
-      .catch(User.NotFoundError, () => reply.notFound())
-      .catch(unknownError)
+      .catch(User.NotFoundError, () => reply.notFound("User not found"))
+      .catch(unknownError(reply))
+  }
+}
+
+const unauth = {
+  method: "POST",
+  path: "/unauth",
+  handler({auth}, reply) {
+    redisClient.del(auth.credentials.uuid)
+    reply().code(204)
   }
 }
 
 export default [
-  create
+  auth,
+  unauth
 ]

@@ -3,6 +3,7 @@ import Story from "../models/story"
 import unknownError from "../lib/unknown-error"
 
 const index = {
+  config: {auth: false},
   method: "GET",
   path: "/stories",
   handler({params}, reply) {
@@ -17,18 +18,20 @@ const index = {
 }
 
 const show = {
+  config: {auth: false},
   method: "GET",
   path: "/stories/{uuid}",
   handler({params: {uuid}}, reply) {
     new Story({uuid})
       .fetch({require: true})
       .then(reply)
-      .catch(Story.NotFoundError, () => reply.notFound())
+      .catch(Story.NotFoundError, () => reply.notFound(`Story ID ${uuid} not found.`))
       .catch(unknownError(reply))
   }
 }
 
 const create = {
+  config: {auth: false},
   method: "POST",
   path: "/stories",
   handler({payload}, reply) {
@@ -43,6 +46,7 @@ const create = {
 }
 
 const update = {
+  config: {auth: false},
   method: "PUT",
   path: "/stories/{uuid}",
   handler({params: {uuid}, payload}, reply) {
@@ -57,13 +61,14 @@ const update = {
 }
 
 const destroy = {
+  config: {auth: false},
   method: "DELETE",
   path: "/stories/{uuid}",
   handler({params: {uuid}}, reply) {
     new Story({uuid})
       .destroy({require: true})
       .then(() => reply().code(204))
-      .catch(Story.NoRowsDeletedError, () => reply.notFound())
+      .catch(Story.NoRowsDeletedError, () => reply.notFound(`Story ID ${uuid} not found.`))
       .catch(unknownError(reply))
   }
 }

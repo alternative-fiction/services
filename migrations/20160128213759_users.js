@@ -14,8 +14,6 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo("")
 
-    t.text("superToken", "integer")
-
     t.string("bio")
       .notNullable()
       .defaultTo("")

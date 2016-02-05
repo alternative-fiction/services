@@ -1,8 +1,13 @@
 import Users from "../collections/users"
 import User from "../models/user"
+import createRedisClient from "redis-connection"
 import unknownError from "../lib/unknown-error"
+import {createAuth} from "../config/auth"
+
+const redisClient = createRedisClient()
 
 const index = {
+  config: {auth: false},
   method: "GET",
   path: "/users",
   handler({params}, reply) {
@@ -15,18 +20,20 @@ const index = {
 }
 
 const show = {
+  config: {auth: false},
   method: "GET",
   path: "/users/{uuid}",
   handler({params: {uuid}}, reply) {
     new User({uuid})
       .fetch({require: true})
       .then(reply)
-      .catch(User.NotFoundError, () => reply.notFound())
+      .catch(User.NotFoundError, () => reply.notFound(`User ID ${uuid} not found.`))
       .catch(unknownError(reply))
   }
 }
 
 const create = {
+  config: {auth: false},
   method: "POST",
   path: "/users",
   handler({payload}, reply) {
@@ -34,7 +41,12 @@ const create = {
 
     new User(user)
       .save()
-      .then(reply)
+      .then(user => {
+        const {session, token} = createAuth(user)
+
+        redisClient.set(session.uuid, JSON.stringify(session))
+        reply(user).header("Authorization", token)
+      })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(unknownError(reply))
   }
@@ -61,7 +73,7 @@ const destroy = {
     new User({uuid})
       .destroy({require: true})
       .then(() => reply().code(204))
-      .catch(User.NoRowsDeletedError, () => reply.notFound())
+      .catch(User.NoRowsDeletedError, () => reply.notFound(`User ID ${uuid} not found.`))
       .catch(unknownError(reply))
   }
 }

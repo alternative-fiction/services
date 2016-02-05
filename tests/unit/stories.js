@@ -3,10 +3,11 @@ import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
 import Chance from "chance"
+import createMockUser from "../mocks/user"
 
 const chance = new Chance()
 const lab = exports.lab = Lab.script()
-
+const user = createMockUser()
 const story = {
   body: chance.paragraph({sentences: 10}),
   description: chance.sentence(),
@@ -21,10 +22,32 @@ const story = {
 }
 
 lab.experiment("Stories", () => {
+  let authorization
   let uuid
+
+  lab.test("Create user for further tests.", done => {
+    const options = {
+      method: "POST",
+      payload: {user},
+      url: "/users"
+    }
+
+    server.inject(options, ({headers, result, statusCode}) => {
+      Code.expect(statusCode).to.equal(200)
+      Code.expect(headers.authorization).to.exist()
+
+      authorization = headers.authorization
+
+      Code.expect(result.username).to.equal(user.username)
+      Code.expect(result.bio).to.equal(user.bio)
+
+      server.stop(done)
+    })
+  })
 
   lab.test("Create", done => {
     const options = {
+      headers: {authorization},
       method: "POST",
       payload: {story},
       url: "/stories"
@@ -66,6 +89,7 @@ lab.experiment("Stories", () => {
 
   lab.test("Update", done => {
     const options = {
+      headers: {authorization},
       method: "PUT",
       payload: {
         story: {
@@ -79,6 +103,20 @@ lab.experiment("Stories", () => {
       Code.expect(statusCode).to.equal(200)
 
       Code.expect(result.body).to.equal(options.payload.story.body)
+
+      server.stop(done)
+    })
+  })
+
+  lab.test("Destroy", done => {
+    const options = {
+      headers: {authorization},
+      method: "DELETE",
+      url: `/stories/${uuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      Code.expect(statusCode).to.equal(204)
 
       server.stop(done)
     })
