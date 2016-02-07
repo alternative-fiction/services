@@ -34,7 +34,7 @@ lab.experiment("Session", () => {
     const options = {
       method: "POST",
       payload: {
-        email: user.email,
+        email: user.email.toUpperCase(), // Test case insensitivity
         password: user.password
       },
       url: "/auth"

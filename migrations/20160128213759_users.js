@@ -6,11 +6,11 @@ exports.up = function(knex) {
       .notNullable()
       .index()
 
-    t.text("email", "string")
+    t.specificType("email", "citext")
       .unique()
       .index()
 
-    t.text("passwordDigest", "string")
+    t.string("passwordDigest")
       .notNullable()
       .defaultTo("")
 
@@ -18,7 +18,7 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo("")
 
-    t.string("username")
+    t.specificType("username", "citext")
       .unique()
       .index()
 
