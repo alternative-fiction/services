@@ -6,6 +6,6 @@ class Timestamp {
   }
 }
 
-const log = env === "development" ? console.log.bind(console, "[%s]", new Timestamp()) : () => {}
+const log = env !== "test" ? console.log.bind(console, "[%s]", new Timestamp()) : () => {}
 
 export default log
