@@ -25,7 +25,7 @@ function validateFunc(decoded, request, next) {
   redisClient.get(decoded.uuid, (redisError, reply) => {
     let session
 
-    if (redisError) console.log(redisError)
+    if (redisError) log(redisError)
 
     if (!reply) return next(redisError, false)
 

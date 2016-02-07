@@ -23,6 +23,7 @@ const auth = {
         const {session, token} = createAuth(user)
 
         redisClient.set(session.uuid, JSON.stringify(session))
+
         reply(user).header("Authorization", token)
       })
       .catch(User.NotFoundError, () => reply.notFound("User not found"))
