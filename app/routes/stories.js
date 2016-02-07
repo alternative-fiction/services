@@ -31,7 +31,6 @@ const show = {
 }
 
 const create = {
-  config: {auth: false},
   method: "POST",
   path: "/stories",
   handler({payload}, reply) {
@@ -46,7 +45,6 @@ const create = {
 }
 
 const update = {
-  config: {auth: false},
   method: "PUT",
   path: "/stories/{uuid}",
   handler({params: {uuid}, payload}, reply) {
@@ -61,7 +59,6 @@ const update = {
 }
 
 const destroy = {
-  config: {auth: false},
   method: "DELETE",
   path: "/stories/{uuid}",
   handler({params: {uuid}}, reply) {

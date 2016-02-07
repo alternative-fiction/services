@@ -1,29 +1,40 @@
 import Lab from "lab"
 import Code from "code"
 import server from "../../app"
-import Chance from "chance"
+import createUserMock from "../mocks/user"
+import createStoryMock from "../mocks/Story"
 
-const chance = new Chance()
 const lab = exports.lab = Lab.script()
-
-const story = {
-  body: chance.paragraph({sentences: 10}),
-  description: chance.sentence(),
-  title: chance.sentence(),
-  meta: {
-    tags: [
-      chance.word(),
-      chance.word(),
-      chance.word()
-    ]
-  }
-}
+const user = createUserMock()
+const story = createStoryMock()
 
 lab.experiment("Stories search", () => {
+  let authorization
   let uuid
+
+  lab.test("Create user for further tests.", done => {
+    const options = {
+      method: "POST",
+      payload: {user},
+      url: "/users"
+    }
+
+    server.inject(options, ({headers, result, statusCode}) => {
+      Code.expect(statusCode).to.equal(200)
+      Code.expect(headers.authorization).to.exist()
+
+      authorization = headers.authorization
+
+      Code.expect(result.username).to.equal(user.username)
+      Code.expect(result.bio).to.equal(user.bio)
+
+      server.stop(done)
+    })
+  })
 
   lab.test("Create story", done => {
     const options = {
+      headers: {authorization},
       method: "POST",
       payload: {story},
       url: "/stories"
