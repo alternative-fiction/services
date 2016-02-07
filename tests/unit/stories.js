@@ -2,11 +2,9 @@ import Lab from "lab"
 import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
-import Chance from "chance"
 import createUserMock from "../mocks/user"
 import createStoryMock from "../mocks/Story"
 
-const chance = new Chance()
 const lab = exports.lab = Lab.script()
 const user = createUserMock()
 const story = createStoryMock()
@@ -78,13 +76,13 @@ lab.experiment("Stories", () => {
   })
 
   lab.test("Update", done => {
+    const {body, meta} = createStoryMock()
+
     const options = {
       headers: {authorization},
       method: "PUT",
       payload: {
-        story: {
-          body: chance.paragraph({sentences: 50})
-        }
+        story: {body, meta}
       },
       url: `/stories/${uuid}`
     }
@@ -93,6 +91,7 @@ lab.experiment("Stories", () => {
       Code.expect(statusCode).to.equal(200)
 
       Code.expect(result.body).to.equal(options.payload.story.body)
+      meta.tags.forEach((tag, i) => Code.expect(result.meta.tags[i]).to.equal(tag))
 
       server.stop(done)
     })
