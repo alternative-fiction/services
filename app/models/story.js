@@ -19,5 +19,10 @@ export default registerModel("Story", createModel({
       uuid: this.get("uuid")
     }
   },
-  tableName: "stories"
+  tableName: "stories",
+  validations: {
+    description: ["maxLength:254"],
+    published: ["boolean"],
+    title: ["maxLength:254"]
+  }
 }))

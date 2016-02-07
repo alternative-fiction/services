@@ -2,10 +2,10 @@ import Lab from "lab"
 import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
-import createMockUser from "../mocks/user"
+import createUserMock from "../mocks/user"
 
 const lab = exports.lab = Lab.script()
-const user = createMockUser()
+const user = createUserMock()
 
 lab.experiment("Users", () => {
   let authorization

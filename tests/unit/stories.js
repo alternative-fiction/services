@@ -3,23 +3,13 @@ import Code from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
 import Chance from "chance"
-import createMockUser from "../mocks/user"
+import createUserMock from "../mocks/user"
+import createStoryMock from "../mocks/Story"
 
 const chance = new Chance()
 const lab = exports.lab = Lab.script()
-const user = createMockUser()
-const story = {
-  body: chance.paragraph({sentences: 10}),
-  description: chance.sentence(),
-  title: chance.sentence(),
-  meta: {
-    tags: [
-      chance.word(),
-      chance.word(),
-      chance.word()
-    ]
-  }
-}
+const user = createUserMock()
+const story = createStoryMock()
 
 lab.experiment("Stories", () => {
   let authorization
