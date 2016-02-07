@@ -53,7 +53,7 @@ const create = {
 }
 
 const update = {
-  method: "PUT",
+  method: "PATCH",
   path: "/users/{uuid}",
   handler({params: {uuid}, payload}, reply) {
     const {user} = payload || {}

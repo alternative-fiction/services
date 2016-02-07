@@ -80,7 +80,7 @@ lab.experiment("Stories", () => {
 
     const options = {
       headers: {authorization},
-      method: "PUT",
+      method: "PATCH",
       payload: {
         story: {body, meta}
       },

@@ -45,7 +45,7 @@ const create = {
 }
 
 const update = {
-  method: "PUT",
+  method: "PATCH",
   path: "/stories/{uuid}",
   handler({params: {uuid}, payload}, reply) {
     const {story} = payload || {}

@@ -51,7 +51,7 @@ lab.experiment("Users", () => {
   lab.test("Update", done => {
     const options = {
       headers: {authorization},
-      method: "PUT",
+      method: "PATCH",
       payload: {
         user: {
           bio: "updated bio"
