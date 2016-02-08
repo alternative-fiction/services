@@ -49,10 +49,12 @@ const create = {
 const update = {
   method: "PATCH",
   path: "/stories/{uuid}",
-  handler({params: {uuid}, payload}, reply) {
+  handler({auth, params: {uuid}, payload}, reply) {
     const {story} = payload || {}
+    const {userUuid} = auth.credentials
 
     new Story({uuid})
+      .where({userUuid})
       .save(story, {require: true, patch: true})
       .then(reply)
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
@@ -63,8 +65,11 @@ const update = {
 const destroy = {
   method: "DELETE",
   path: "/stories/{uuid}",
-  handler({params: {uuid}}, reply) {
+  handler({auth, params: {uuid}}, reply) {
+    const {userUuid} = auth.credentials
+
     new Story({uuid})
+      .where({userUuid})
       .destroy({require: true})
       .then(() => reply().code(204))
       .catch(Story.NoRowsDeletedError, () => reply.notFound(`Story ID ${uuid} not found.`))

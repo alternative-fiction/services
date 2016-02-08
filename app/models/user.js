@@ -3,7 +3,6 @@ import {createModel} from "./base"
 import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
-  idAttribute: "uuid",
   hasSecurePassword: "passwordDigest",
   serialize() {
     return {

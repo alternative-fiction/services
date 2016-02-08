@@ -7,12 +7,15 @@ import createStoryMock from "../mocks/Story"
 
 const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
+const altUser = createUserMock()
 const story = createStoryMock()
 
 experiment("Stories", () => {
   let authorization
   let storyUuid
   let userUuid
+  let altUserUuid
+  let altAuthorization
 
   test("Create user for further tests.", done => {
     const options = {
@@ -35,6 +38,24 @@ experiment("Stories", () => {
     })
   })
 
+  test("Create alt user for further tests.", done => {
+    const options = {
+      method: "POST",
+      payload: {user: altUser},
+      url: "/users"
+    }
+
+    server.inject(options, ({headers, result, statusCode}) => {
+      expect(statusCode).to.equal(200)
+      expect(headers.authorization).to.exist()
+
+      altAuthorization = headers.authorization
+      altUserUuid = result.uuid
+
+      server.stop(done)
+    })
+  })
+
   test("Create", done => {
     const options = {
       headers: {authorization},
@@ -51,6 +72,7 @@ experiment("Stories", () => {
       expect(result.body).to.equal(story.body)
       expect(result.description).to.equal(story.description)
       expect(result.title).to.equal(story.title)
+      expect(result.userUuid).to.equal(userUuid)
 
       story.meta.tags.forEach((tag, i) => expect(result.meta.tags[i]).to.equal(tag))
 
@@ -102,6 +124,39 @@ experiment("Stories", () => {
     })
   })
 
+  test("Update error (authorization)", done => {
+    const {body} = createStoryMock()
+
+    const options = {
+      headers: {authorization: altAuthorization},
+      method: "PATCH",
+      payload: {
+        story: {body}
+      },
+      url: `/stories/${storyUuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(400)
+
+      server.stop(done)
+    })
+  })
+
+  test("Destroy error (authorization)", done => {
+    const options = {
+      headers: {authorization: altAuthorization},
+      method: "DELETE",
+      url: `/stories/${storyUuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(404)
+
+      server.stop(done)
+    })
+  })
+
   test("Destroy", done => {
     const options = {
       headers: {authorization},
@@ -116,7 +171,7 @@ experiment("Stories", () => {
     })
   })
 
-  test("Retrieve (error)", done => {
+  test("Retrieve error (not found)", done => {
     const options = {
       method: "GET",
       url: `/stories/${uniqueId()}`

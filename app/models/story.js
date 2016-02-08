@@ -1,4 +1,3 @@
-import Boom from "boom"
 import {Error as ValidationError} from "checkit"
 import {createModel} from "./base"
 import bookshelf, {registerModel} from "../lib/bookshelf"
@@ -11,7 +10,6 @@ const acceptableMetaKeys = Object.keys(defaultMeta)
 const tagLimit = 10
 
 export default registerModel("Story", createModel({
-  idAttribute: "uuid",
   initialize() {
     this.on("saving", (model, {meta}) => {
       if (!(meta && meta.tags)) return
