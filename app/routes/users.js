@@ -1,3 +1,4 @@
+import bookshelf from "../lib/bookshelf"
 import Users from "../collections/users"
 import User from "../models/user"
 import createRedisClient from "redis-connection"
@@ -24,9 +25,19 @@ const show = {
   method: "GET",
   path: "/users/{uuid}",
   handler({params: {uuid}}, reply) {
+    const Stories = bookshelf.collection("Stories")
+
     new User({uuid})
       .fetch({require: true})
-      .then(reply)
+      .then(user => {
+        new Stories()
+          .query("where", "userUuid", "=", uuid)
+          .count()
+          .then(storiesCount => {
+            user.set("storiesCount", storiesCount)
+            reply(user)
+          })
+      })
       .catch(User.NotFoundError, () => reply.notFound(`User ID ${uuid} not found.`))
       .catch(unknownError(reply))
   }

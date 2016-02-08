@@ -23,7 +23,7 @@ const show = {
   path: "/stories/{uuid}",
   handler({params: {uuid}}, reply) {
     new Story({uuid})
-      .fetch({require: true})
+      .fetch({require: true, withRelated: ["user"]})
       .then(reply)
       .catch(Story.NotFoundError, () => reply.notFound(`Story ID ${uuid} not found.`))
       .catch(unknownError(reply))
@@ -33,8 +33,10 @@ const show = {
 const create = {
   method: "POST",
   path: "/stories",
-  handler({payload}, reply) {
+  handler({auth, payload}, reply) {
     const {story} = payload || {}
+
+    story.userUuid = auth.credentials.userUuid
 
     new Story(story)
       .save()

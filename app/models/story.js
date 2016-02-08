@@ -1,4 +1,4 @@
-import {registerModel} from "../lib/bookshelf"
+import bookshelf, {registerModel} from "../lib/bookshelf"
 import {createModel} from "./base"
 import Checkit from "checkit"
 import {uniq} from "lodash"
@@ -28,10 +28,17 @@ export default registerModel("Story", createModel({
       published: this.get("published"),
       title: this.get("title") || "",
       updatedAt: this.get("updatedAt"),
+      userUuid: this.get("userUuid"),
+      user: this.related("user").serialize(),
       uuid: this.get("uuid")
     }
   },
   tableName: "stories",
+  user() {
+    const User = bookshelf.model("User")
+
+    return this.belongsTo(User, "userUuid")
+  },
   validations: {
     description: ["maxLength:254"],
     meta: ["object", value => {

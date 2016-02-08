@@ -9,10 +9,16 @@ export default registerModel("User", createModel({
     return {
       bio: this.get("bio") || "",
       createdAt: this.get("createdAt"),
+      storiesCount: parseInt(this.get("storiesCount") || 0, 10),
       updatedAt: this.get("updatedAt"),
       username: this.get("username") || "Anonymous",
       uuid: this.get("uuid")
     }
+  },
+  stories() {
+    const Story = bookshelf.model("Story")
+
+    return this.hasMany(Story, "userUuid")
   },
   tableName: "users",
   validations: {

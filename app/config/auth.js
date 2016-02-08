@@ -11,7 +11,7 @@ export function createAuth(user) {
   const session = {
     valid: true,
     uuid: uniqueId(36),
-    userUuid: user.uuid
+    userUuid: user.get("uuid")
   }
 
   return {
