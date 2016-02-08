@@ -1,6 +1,6 @@
 import bookshelf, {registerModel} from "../lib/bookshelf"
 import {createModel} from "./base"
-import Checkit from "checkit"
+import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
   idAttribute: "uuid",
@@ -29,9 +29,10 @@ export default registerModel("User", createModel({
         .query({where: {email}})
         .fetchOne()
         .then(record => {
-          if (record) throw new Checkit.Error("The email address is already in use.")
+          if (record) throw new ValidationError("The email address is already in use.")
         })
     }],
+    password: ["maxLength:254"],
     username: ["alphaDash", username => {
       const Users = bookshelf.collection("Users")
 
@@ -39,7 +40,7 @@ export default registerModel("User", createModel({
         .query({where: {username}})
         .fetchOne()
         .then(record => {
-          if (record) throw new Checkit.Error("The username is already in use.")
+          if (record) throw new ValidationError("The username is already in use.")
         })
     }]
   }

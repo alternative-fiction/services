@@ -1,6 +1,7 @@
-import bookshelf, {registerModel} from "../lib/bookshelf"
+import Boom from "boom"
+import {Error as ValidationError} from "checkit"
 import {createModel} from "./base"
-import Checkit from "checkit"
+import bookshelf, {registerModel} from "../lib/bookshelf"
 import {uniq} from "lodash"
 
 const defaultMeta = {
@@ -46,16 +47,16 @@ export default registerModel("Story", createModel({
         .filter(key => !acceptableMetaKeys.includes(key))
 
       if (invalidKeys.length !== 0)
-        throw new Checkit.Error(`Unacceptable meta keys, '${invalidKeys.join(", ")}'.`)
+        throw new ValidationError(`Unacceptable meta keys, '${invalidKeys.join(", ")}'.`)
 
       if (!value.hasOwnProperty("tags") || !Array.isArray(value.tags))
-        throw new Checkit.Error("Meta must include array of tags.")
+        throw new ValidationError("Meta must include array of tags.")
 
       if (value.tags.filter(tag => typeof tag !== "string").length !== 0)
-        throw new Checkit.Error("Tags must be an array of strings.")
+        throw new ValidationError("Tags must be an array of strings.")
 
       if (value.tags.length > tagLimit)
-        throw new Checkit.Error(`Tags must not exceed ${tagLimit}.`)
+        throw new ValidationError(`Tags must not exceed ${tagLimit}.`)
     }],
     published: ["boolean"],
     title: ["maxLength:254"]
