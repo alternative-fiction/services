@@ -1,18 +1,18 @@
 import Lab from "lab"
-import Code from "code"
+import {expect} from "code"
 import server from "../../app"
 import Chance from "chance"
 import createUserMock from "../mocks/user"
 
 const chance = new Chance()
-const lab = exports.lab = Lab.script()
+const {experiment, test} = exports.lab = Lab.script()
 
 const user = createUserMock()
 
-lab.experiment("Session", () => {
+experiment("Session", () => {
   let authorization
 
-  lab.test("Create user for further tests.", done => {
+  test("Create user for further tests.", done => {
     const options = {
       method: "POST",
       payload: {user},
@@ -20,17 +20,17 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, result, statusCode}) => {
-      Code.expect(statusCode).to.equal(200)
-      Code.expect(headers.authorization).to.exist()
+      expect(statusCode).to.equal(200)
+      expect(headers.authorization).to.exist()
 
-      Code.expect(result.username).to.equal(user.username)
-      Code.expect(result.bio).to.equal(user.bio)
+      expect(result.username).to.equal(user.username)
+      expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
     })
   })
 
-  lab.test("Authorize", done => {
+  test("Authorize", done => {
     const options = {
       method: "POST",
       payload: {
@@ -41,18 +41,18 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, result, statusCode}) => {
-      Code.expect(statusCode).to.equal(200)
-      Code.expect(headers.authorization).to.exist()
+      expect(statusCode).to.equal(200)
+      expect(headers.authorization).to.exist()
 
       authorization = headers.authorization
 
-      Code.expect(result.username).to.equal(user.username)
+      expect(result.username).to.equal(user.username)
 
       server.stop(done)
     })
   })
 
-  lab.test("Unauthorize", done => {
+  test("Unauthorize", done => {
     const options = {
       headers: {authorization},
       method: "POST",
@@ -60,14 +60,14 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, statusCode}) => {
-      Code.expect(statusCode).to.equal(204)
-      Code.expect(headers.authorization).to.not.exist()
+      expect(statusCode).to.equal(204)
+      expect(headers.authorization).to.not.exist()
 
       server.stop(done)
     })
   })
 
-  lab.test("Unauthorize error (expired)", done => {
+  test("Unauthorize error (expired)", done => {
     const options = {
       headers: {authorization},
       method: "POST",
@@ -75,14 +75,14 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, statusCode}) => {
-      Code.expect(statusCode).to.equal(401)
-      Code.expect(headers.authorization).to.not.exist()
+      expect(statusCode).to.equal(401)
+      expect(headers.authorization).to.not.exist()
 
       server.stop(done)
     })
   })
 
-  lab.test("Authorize error (Invalid password)", done => {
+  test("Authorize error (Invalid password)", done => {
     const options = {
       method: "POST",
       payload: {
@@ -93,14 +93,14 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, statusCode}) => {
-      Code.expect(statusCode).to.equal(401)
-      Code.expect(headers.authorization).to.not.exist()
+      expect(statusCode).to.equal(401)
+      expect(headers.authorization).to.not.exist()
 
       server.stop(done)
     })
   })
 
-  lab.test("Authorize error (unknown user)", done => {
+  test("Authorize error (unknown user)", done => {
     const options = {
       method: "POST",
       payload: {
@@ -111,8 +111,8 @@ lab.experiment("Session", () => {
     }
 
     server.inject(options, ({headers, statusCode}) => {
-      Code.expect(statusCode).to.equal(404)
-      Code.expect(headers.authorization).to.not.exist()
+      expect(statusCode).to.equal(404)
+      expect(headers.authorization).to.not.exist()
 
       server.stop(done)
     })

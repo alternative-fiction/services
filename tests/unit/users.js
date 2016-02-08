@@ -1,17 +1,17 @@
 import Lab from "lab"
-import Code from "code"
+import {expect} from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
 import createUserMock from "../mocks/user"
 
-const lab = exports.lab = Lab.script()
+const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
 
-lab.experiment("Users", () => {
+experiment("Users", () => {
   let authorization
   let uuid
 
-  lab.test("Create", done => {
+  test("Create", done => {
     const options = {
       method: "POST",
       payload: {user},
@@ -19,36 +19,36 @@ lab.experiment("Users", () => {
     }
 
     server.inject(options, ({headers, result, statusCode}) => {
-      Code.expect(statusCode).to.equal(200)
-      Code.expect(headers.authorization).to.exist()
+      expect(statusCode).to.equal(200)
+      expect(headers.authorization).to.exist()
 
       uuid = result.uuid
       authorization = headers.authorization
 
-      Code.expect(result.username).to.equal(user.username)
-      Code.expect(result.bio).to.equal(user.bio)
+      expect(result.username).to.equal(user.username)
+      expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
     })
   })
 
-  lab.test("Retrieve", done => {
+  test("Retrieve", done => {
     const options = {
       method: "GET",
       url: `/users/${uuid}`
     }
 
     server.inject(options, ({result, statusCode}) => {
-      Code.expect(statusCode).to.equal(200)
+      expect(statusCode).to.equal(200)
 
-      Code.expect(result.username).to.equal(user.username)
-      Code.expect(result.bio).to.equal(user.bio)
+      expect(result.username).to.equal(user.username)
+      expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
     })
   })
 
-  lab.test("Update", done => {
+  test("Update", done => {
     const options = {
       headers: {authorization},
       method: "PATCH",
@@ -61,15 +61,15 @@ lab.experiment("Users", () => {
     }
 
     server.inject(options, ({result, statusCode}) => {
-      Code.expect(statusCode).to.equal(200)
+      expect(statusCode).to.equal(200)
 
-      Code.expect(result.bio).to.equal(options.payload.user.bio)
+      expect(result.bio).to.equal(options.payload.user.bio)
 
       server.stop(done)
     })
   })
 
-  lab.test("Destroy", done => {
+  test("Destroy", done => {
     const options = {
       headers: {authorization},
       method: "DELETE",
@@ -77,20 +77,20 @@ lab.experiment("Users", () => {
     }
 
     server.inject(options, ({statusCode}) => {
-      Code.expect(statusCode).to.equal(204)
+      expect(statusCode).to.equal(204)
 
       server.stop(done)
     })
   })
 
-  lab.test("Retrieve (error)", done => {
+  test("Retrieve (error)", done => {
     const options = {
       method: "GET",
       url: `/users/${uniqueId()}`
     }
 
     server.inject(options, ({statusCode}) => {
-      Code.expect(statusCode).to.equal(404)
+      expect(statusCode).to.equal(404)
 
       server.stop(done)
     })
