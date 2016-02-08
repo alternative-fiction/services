@@ -6,7 +6,9 @@ import Boom from "boom"
 const baseModel = bookshelf.Model.extend({
   hasTimestamps: ["createdAt", "updatedAt"],
   initialize() {
-    this.on("creating", model => model.set("uuid", uniqueId(12)))
+    this.on("creating", model => {
+      if (this.isNew()) model.set("uuid", uniqueId(12))
+    })
 
     this.on("saving", this.validate)
   },
