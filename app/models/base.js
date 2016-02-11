@@ -2,6 +2,7 @@ import bookshelf from "../lib/bookshelf"
 import Checkit from "checkit"
 import uniqueId from "../lib/unique-id"
 import Boom from "boom"
+import Bluebird from "bluebird"
 
 const baseModel = bookshelf.Model.extend({
   hasTimestamps: ["createdAt", "updatedAt"],
@@ -35,6 +36,20 @@ const baseModel = bookshelf.Model.extend({
       })
   },
   validations: {}
+}, {
+  authorize: Bluebird.method(function authorize(attributes, userUuid) {
+    return new this(attributes)
+      .fetch({require: true})
+      .tap(model => {
+        const expectedUserUuid = model.get("userUuid")
+
+        if (expectedUserUuid !== userUuid) throw Boom.create(401,
+          `Given user UUID ${userUuid} does not match expected ${expectedUserUuid}`)
+      })
+  }),
+  notFoundHandler(reply, uuid = "unknown") {
+    return () => reply.notFound(`Resource UUID ${uuid} not found.`)
+  }
 })
 
 export function createModel(spec) {

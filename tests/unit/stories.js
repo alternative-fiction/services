@@ -14,7 +14,6 @@ experiment("Stories", () => {
   let authorization
   let storyUuid
   let userUuid
-  let altUserUuid
   let altAuthorization
 
   test("Create user for further tests.", done => {
@@ -45,12 +44,11 @@ experiment("Stories", () => {
       url: "/users"
     }
 
-    server.inject(options, ({headers, result, statusCode}) => {
+    server.inject(options, ({headers, statusCode}) => {
       expect(statusCode).to.equal(200)
       expect(headers.authorization).to.exist()
 
       altAuthorization = headers.authorization
-      altUserUuid = result.uuid
 
       server.stop(done)
     })
@@ -137,7 +135,7 @@ experiment("Stories", () => {
     }
 
     server.inject(options, ({statusCode}) => {
-      expect(statusCode).to.equal(400)
+      expect(statusCode).to.equal(401)
 
       server.stop(done)
     })
@@ -151,7 +149,7 @@ experiment("Stories", () => {
     }
 
     server.inject(options, ({statusCode}) => {
-      expect(statusCode).to.equal(404)
+      expect(statusCode).to.equal(401)
 
       server.stop(done)
     })

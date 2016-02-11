@@ -53,11 +53,14 @@ const update = {
     const {story} = payload || {}
     const {userUuid} = auth.credentials
 
-    new Story({uuid})
-      .where({userUuid})
-      .save(story, {require: true, patch: true})
-      .then(reply)
+    Story.authorize({uuid}, userUuid)
+      .then(model => {
+        return model
+          .save(story, {require: true, patch: true})
+          .then(reply)
+      })
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
+      .catch(Story.NotFoundError, Story.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }
@@ -68,11 +71,14 @@ const destroy = {
   handler({auth, params: {uuid}}, reply) {
     const {userUuid} = auth.credentials
 
-    new Story({uuid})
-      .where({userUuid})
-      .destroy({require: true})
-      .then(() => reply().code(204))
-      .catch(Story.NoRowsDeletedError, () => reply.notFound(`Story ID ${uuid} not found.`))
+    Story.authorize({uuid}, userUuid)
+      .then(model => {
+        return model
+          .destroy({require: true})
+          .then(() => reply().code(204))
+      })
+      .catch(Story.NoRowsDeletedError, Story.notFoundHandler(reply, uuid))
+      .catch(Story.NotFoundError, Story.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }
