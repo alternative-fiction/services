@@ -34,7 +34,7 @@ const create = {
   method: "POST",
   path: "/stories",
   handler({auth, payload}, reply) {
-    const {story} = payload || {}
+    const {story} = payload || {story: {}}
 
     story.userUuid = auth.credentials.userUuid
 
