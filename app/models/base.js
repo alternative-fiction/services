@@ -12,10 +12,9 @@ const baseModel = bookshelf.Model.extend({
   },
   initialize() {
     this.on("creating", model => model.set("uuid", uniqueId(12)))
-
-    this.on("saving", this.validate)
+    this.on("saving", (model, attributes) => this.validate(attributes))
   },
-  validate() {
+  validate(attributes) {
     Object.keys(this.validations).forEach(key => {
       this.validations[key] = this.validations[key].map(validation => {
         return typeof validation === "function" ? validation.bind(this) : validation
@@ -24,7 +23,7 @@ const baseModel = bookshelf.Model.extend({
     const checkit = new Checkit(this.validations)
 
     return checkit
-      .run(this.attributes)
+      .run(attributes)
       .catch(Checkit.Error, response => {
         const boom = Boom.create(400, response.message)
 
@@ -41,10 +40,7 @@ const baseModel = bookshelf.Model.extend({
     return new this(attributes)
       .fetch({require: true})
       .tap(model => {
-        const expectedUserUuid = model.get("userUuid")
-
-        if (expectedUserUuid !== userUuid) throw Boom.create(401,
-          `Given user UUID ${userUuid} does not match expected ${expectedUserUuid}`)
+        if (!model.isAuthorized(userUuid)) throw Boom.create(401)
       })
   }),
   notFoundHandler(reply, uuid = "unknown") {

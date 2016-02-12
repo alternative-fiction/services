@@ -18,6 +18,9 @@ export default registerModel("Story", createModel({
       model.set("meta", meta)
     })
   },
+  isAuthorized(userUuid) {
+    return this.get("userUuid") === userUuid
+  },
   serialize() {
     return {
       body: this.get("body") || "",

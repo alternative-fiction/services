@@ -66,13 +66,18 @@ const create = {
 const update = {
   method: "PATCH",
   path: "/users/{uuid}",
-  handler({params: {uuid}, payload}, reply) {
+  handler({auth, params: {uuid}, payload}, reply) {
     const {user} = payload || {}
+    const {userUuid} = auth.credentials
 
-    new User({uuid})
-      .save(user, {require: true, patch: true})
-      .then(reply)
+    User.authorize({uuid}, userUuid)
+      .then(model => {
+        return model
+          .save(user, {require: true, patch: true})
+          .then(reply)
+      })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
+      .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }
@@ -80,11 +85,17 @@ const update = {
 const destroy = {
   method: "DELETE",
   path: "/users/{uuid}",
-  handler({params: {uuid}}, reply) {
-    new User({uuid})
-      .destroy({require: true})
-      .then(() => reply().code(204))
+  handler({auth, params: {uuid}}, reply) {
+    const {userUuid} = auth.credentials
+
+    User.authorize({uuid}, userUuid)
+      .then(model => {
+        model
+          .destroy({require: true})
+          .then(() => reply().code(204))
+      })
       .catch(User.NoRowsDeletedError, () => reply.notFound(`User ID ${uuid} not found.`))
+      .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }

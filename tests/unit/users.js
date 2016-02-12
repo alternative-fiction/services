@@ -6,9 +6,11 @@ import createUserMock from "../mocks/user"
 
 const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
+const altUser = createUserMock()
 
 experiment("Users", () => {
   let authorization
+  let altAuthorization
   let uuid
 
   test("Create", done => {
@@ -27,6 +29,23 @@ experiment("Users", () => {
 
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
+
+      server.stop(done)
+    })
+  })
+
+  test("Create alt user for authorization tests.", done => {
+    const options = {
+      method: "POST",
+      payload: {user: altUser},
+      url: "/users"
+    }
+
+    server.inject(options, ({headers, statusCode}) => {
+      expect(statusCode).to.equal(200)
+      expect(headers.authorization).to.exist()
+
+      altAuthorization = headers.authorization
 
       server.stop(done)
     })
@@ -64,6 +83,39 @@ experiment("Users", () => {
       expect(statusCode).to.equal(200)
 
       expect(result.bio).to.equal(options.payload.user.bio)
+
+      server.stop(done)
+    })
+  })
+
+  test("Update error (authorization)", done => {
+    const options = {
+      headers: {authorization: altAuthorization},
+      method: "PATCH",
+      payload: {
+        user: {
+          bio: "unauthorized updated bio"
+        }
+      },
+      url: `/users/${uuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(401)
+
+      server.stop(done)
+    })
+  })
+
+  test("Destroy error (authorization)", done => {
+    const options = {
+      headers: {authorization: altAuthorization},
+      method: "DELETE",
+      url: `/users/${uuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(401)
 
       server.stop(done)
     })

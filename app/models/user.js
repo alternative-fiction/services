@@ -4,6 +4,9 @@ import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
   hasSecurePassword: "passwordDigest",
+  isAuthorized(userUuid) {
+    return this.get("uuid") === userUuid
+  },
   serialize() {
     return {
       bio: this.get("bio") || "",

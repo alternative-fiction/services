@@ -37,7 +37,7 @@ experiment("Stories", () => {
     })
   })
 
-  test("Create alt user for further tests.", done => {
+  test("Create alt user for authorization tests.", done => {
     const options = {
       method: "POST",
       payload: {user: altUser},
