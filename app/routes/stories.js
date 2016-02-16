@@ -38,8 +38,8 @@ const create = {
 
     story.userUuid = auth.credentials.userUuid
 
-    new Story(story)
-      .save()
+    new Story()
+      .save(story)
       .then(reply)
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(unknownError(reply))

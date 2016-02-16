@@ -50,13 +50,16 @@ const create = {
   handler({payload}, reply) {
     const {user} = payload || {}
 
-    new User(user)
-      .save()
+    new User()
+      .save(user)
       .then(user => {
         const {session, token} = createAuth(user)
 
         redisClient.set(session.uuid, JSON.stringify(session))
-        reply(user).header("Authorization", token)
+
+        reply(user)
+          .header("Authorization", token)
+          .header("Access-Control-Expose-Headers", "Authorization")
       })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(unknownError(reply))
