@@ -10,8 +10,8 @@ const auth = {
   method: "POST",
   path: "/auth",
   handler({payload}, reply) {
-    const password = (payload.password || "").trim()
     const email = (payload.email || "").trim()
+    const password = payload.password || ""
 
     if (email.length === 0 || password.length === 0) return reply.unauthorized()
 
@@ -24,7 +24,9 @@ const auth = {
 
         redisClient.set(session.uuid, JSON.stringify(session))
 
-        reply(user).header("Authorization", token)
+        reply(user)
+          .header("Authorization", token)
+          .header("Access-Control-Expose-Headers", "Authorization")
       })
       .catch(User.NotFoundError, () => reply.notFound("User not found"))
       .catch(unknownError(reply))
