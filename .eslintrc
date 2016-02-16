@@ -24,7 +24,7 @@
     "comma-style": [1, "last"],
     "computed-property-spacing": [1, "never"],
     "consistent-this": [2, "self"],
-    "consistent-return": 1,
+    "consistent-return": 0,
     "constructor-super": 2,
     "curly": 0,
     "default-case": 1,
