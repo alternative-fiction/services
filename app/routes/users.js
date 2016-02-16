@@ -57,7 +57,7 @@ const create = {
 
         redisClient.set(session.uuid, JSON.stringify(session))
 
-        reply(user)
+        reply(user.serialize(null, {revealPrivateAttributes: true}))
           .header("Authorization", token)
           .header("Access-Control-Expose-Headers", "Authorization")
       })

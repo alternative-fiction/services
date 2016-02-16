@@ -23,6 +23,7 @@ experiment("Session", () => {
       expect(statusCode).to.equal(200)
       expect(headers.authorization).to.exist()
 
+      expect(result.email).to.equal(user.email)
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
 
@@ -46,6 +47,7 @@ experiment("Session", () => {
 
       authorization = headers.authorization
 
+      expect(result.email).to.equal(user.email)
       expect(result.username).to.equal(user.username)
 
       server.stop(done)

@@ -60,6 +60,7 @@ experiment("Users", () => {
     server.inject(options, ({result, statusCode}) => {
       expect(statusCode).to.equal(200)
 
+      expect(result.email).to.not.equal(user.email)
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
 
