@@ -25,7 +25,10 @@ export default registerModel("User", createModel({
   },
   tableName: "users",
   validations: {
-    email: ["email", "maxLength:254", email => {
+    bio: ["maxLength:254"],
+    email: ["required", "email", "maxLength:254", function(email) {
+      if (this.persisted && this.previousAttributes().email === email) return
+
       const Users = bookshelf.collection("Users")
 
       return new Users()
@@ -36,7 +39,9 @@ export default registerModel("User", createModel({
         })
     }],
     password: ["maxLength:254"],
-    username: ["alphaDash", username => {
+    username: ["required", "alphaDash", "maxLength:60", function(username) {
+      if (this.persisted && this.previousAttributes().username === username) return
+
       const Users = bookshelf.collection("Users")
 
       return new Users()

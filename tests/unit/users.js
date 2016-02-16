@@ -1,9 +1,11 @@
 import Lab from "lab"
+import Chance from "chance"
 import {expect} from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
 import createUserMock from "../mocks/user"
 
+const chance = new Chance()
 const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
 const altUser = createUserMock()
@@ -74,7 +76,8 @@ experiment("Users", () => {
       method: "PATCH",
       payload: {
         user: {
-          bio: "updated bio"
+          bio: "updated bio",
+          email: chance.email()
         }
       },
       url: `/users/${uuid}`
@@ -84,6 +87,7 @@ experiment("Users", () => {
       expect(statusCode).to.equal(200)
 
       expect(result.bio).to.equal(options.payload.user.bio)
+      expect(result.email).to.equal(options.payload.user.email)
 
       server.stop(done)
     })

@@ -77,7 +77,7 @@ const update = {
       .then(model => {
         return model
           .save(user, {require: true, patch: true})
-          .then(reply)
+          .then(updatedUser => reply(updatedUser.serialize(null, {revealPrivateAttributes: true})))
       })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
