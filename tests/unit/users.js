@@ -18,7 +18,7 @@ experiment("Users", () => {
   test("Create", done => {
     const options = {
       method: "POST",
-      payload: {user},
+      payload: user,
       url: "/users"
     }
 
@@ -39,7 +39,7 @@ experiment("Users", () => {
   test("Create alt user for authorization tests.", done => {
     const options = {
       method: "POST",
-      payload: {user: altUser},
+      payload: altUser,
       url: "/users"
     }
 
@@ -75,10 +75,8 @@ experiment("Users", () => {
       headers: {authorization},
       method: "PATCH",
       payload: {
-        user: {
-          bio: "updated bio",
-          email: chance.email()
-        }
+        bio: "updated bio",
+        email: chance.email()
       },
       url: `/users/${uuid}`
     }
@@ -86,8 +84,8 @@ experiment("Users", () => {
     server.inject(options, ({result, statusCode}) => {
       expect(statusCode).to.equal(200)
 
-      expect(result.bio).to.equal(options.payload.user.bio)
-      expect(result.email).to.equal(options.payload.user.email)
+      expect(result.bio).to.equal(options.payload.bio)
+      expect(result.email).to.equal(options.payload.email)
 
       server.stop(done)
     })
@@ -98,9 +96,7 @@ experiment("Users", () => {
       headers: {authorization: altAuthorization},
       method: "PATCH",
       payload: {
-        user: {
-          bio: "unauthorized updated bio"
-        }
+        bio: "unauthorized updated bio"
       },
       url: `/users/${uuid}`
     }

@@ -15,7 +15,7 @@ experiment("Session", () => {
   test("Create user for further tests.", done => {
     const options = {
       method: "POST",
-      payload: {user},
+      payload: user,
       url: "/users"
     }
 

@@ -15,7 +15,7 @@ experiment("Stories search", () => {
   test("Create user for further tests.", done => {
     const options = {
       method: "POST",
-      payload: {user},
+      payload: user,
       url: "/users"
     }
 
@@ -36,7 +36,7 @@ experiment("Stories search", () => {
     const options = {
       headers: {authorization},
       method: "POST",
-      payload: {story},
+      payload: story,
       url: "/stories"
     }
 

@@ -34,12 +34,12 @@ const create = {
   method: "POST",
   path: "/stories",
   handler({auth, payload}, reply) {
-    const {story} = payload || {story: {}}
+    payload = payload || {}
 
-    story.userUuid = auth.credentials.userUuid
+    payload.userUuid = auth.credentials.userUuid
 
     new Story()
-      .save(story)
+      .save(payload)
       .then(reply)
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(unknownError(reply))
@@ -50,13 +50,14 @@ const update = {
   method: "PATCH",
   path: "/stories/{uuid}",
   handler({auth, params: {uuid}, payload}, reply) {
-    const {story} = payload || {}
     const {userUuid} = auth.credentials
+
+    payload = payload || {}
 
     Story.authorize({uuid}, userUuid)
       .then(model => {
         return model
-          .save(story, {require: true, patch: true})
+          .save(payload, {require: true, patch: true})
           .then(reply)
       })
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))

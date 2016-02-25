@@ -19,7 +19,7 @@ experiment("Stories", () => {
   test("Create user for further tests.", done => {
     const options = {
       method: "POST",
-      payload: {user},
+      payload: user,
       url: "/users"
     }
 
@@ -40,7 +40,7 @@ experiment("Stories", () => {
   test("Create alt user for authorization tests.", done => {
     const options = {
       method: "POST",
-      payload: {user: altUser},
+      payload: altUser,
       url: "/users"
     }
 
@@ -58,7 +58,7 @@ experiment("Stories", () => {
     const options = {
       headers: {authorization},
       method: "POST",
-      payload: {story},
+      payload: story,
       url: "/stories"
     }
 
@@ -106,16 +106,14 @@ experiment("Stories", () => {
     const options = {
       headers: {authorization},
       method: "PATCH",
-      payload: {
-        story: {body, meta}
-      },
+      payload: {body, meta},
       url: `/stories/${storyUuid}`
     }
 
     server.inject(options, ({statusCode, result}) => {
       expect(statusCode).to.equal(200)
 
-      expect(result.body).to.equal(options.payload.story.body)
+      expect(result.body).to.equal(options.payload.body)
       meta.tags.forEach((tag, i) => expect(result.meta.tags[i]).to.equal(tag))
 
       server.stop(done)
@@ -128,9 +126,7 @@ experiment("Stories", () => {
     const options = {
       headers: {authorization: altAuthorization},
       method: "PATCH",
-      payload: {
-        story: {body}
-      },
+      payload: {body},
       url: `/stories/${storyUuid}`
     }
 

@@ -48,10 +48,10 @@ const create = {
   method: "POST",
   path: "/users",
   handler({payload}, reply) {
-    const {user} = payload || {}
+    payload = payload || {}
 
     new User()
-      .save(user)
+      .save(payload)
       .then(user => {
         const {session, token} = createAuth(user)
 
@@ -70,13 +70,14 @@ const update = {
   method: "PATCH",
   path: "/users/{uuid}",
   handler({auth, params: {uuid}, payload}, reply) {
-    const {user} = payload || {}
+    payload = payload || {}
+
     const {userUuid} = auth.credentials
 
     User.authorize({uuid}, userUuid)
       .then(model => {
         return model
-          .save(user, {require: true, patch: true})
+          .save(payload, {require: true, patch: true})
           .then(updatedUser => reply(updatedUser.serialize(null, {revealPrivateAttributes: true})))
       })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
