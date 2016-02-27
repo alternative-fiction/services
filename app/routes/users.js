@@ -1,11 +1,8 @@
 import bookshelf from "../lib/bookshelf"
 import Users from "../collections/users"
 import User from "../models/user"
-import createRedisClient from "redis-connection"
 import unknownError from "../lib/unknown-error"
 import {createAuth} from "../config/auth"
-
-const redisClient = createRedisClient()
 
 const index = {
   config: {auth: false},
@@ -53,12 +50,10 @@ const create = {
     new User()
       .save(payload)
       .then(user => {
-        const {session, token} = createAuth(user)
-
-        redisClient.set(session.uuid, JSON.stringify(session))
+        const auth = createAuth(user)
 
         reply(user.serialize(null, {revealPrivateAttributes: true}))
-          .header("Authorization", token)
+          .header("Authorization", auth)
           .header("Access-Control-Expose-Headers", "Authorization")
       })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))

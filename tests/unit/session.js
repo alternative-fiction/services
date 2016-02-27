@@ -10,8 +10,6 @@ const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
 
 experiment("Session", () => {
-  let authorization
-
   test("Create user for further tests.", done => {
     const options = {
       method: "POST",
@@ -45,40 +43,8 @@ experiment("Session", () => {
       expect(statusCode).to.equal(200)
       expect(headers.authorization).to.exist()
 
-      authorization = headers.authorization
-
       expect(result.email).to.equal(user.email)
       expect(result.username).to.equal(user.username)
-
-      server.stop(done)
-    })
-  })
-
-  test("Unauthorize", done => {
-    const options = {
-      headers: {authorization},
-      method: "POST",
-      url: "/unauth"
-    }
-
-    server.inject(options, ({headers, statusCode}) => {
-      expect(statusCode).to.equal(204)
-      expect(headers.authorization).to.not.exist()
-
-      server.stop(done)
-    })
-  })
-
-  test("Unauthorize error (expired)", done => {
-    const options = {
-      headers: {authorization},
-      method: "POST",
-      url: "/unauth"
-    }
-
-    server.inject(options, ({headers, statusCode}) => {
-      expect(statusCode).to.equal(401)
-      expect(headers.authorization).to.not.exist()
 
       server.stop(done)
     })

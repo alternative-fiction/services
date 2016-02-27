@@ -6,7 +6,7 @@ import {Server} from "hapi"
 import routes from "./routes"
 import path from "path"
 import plugins from "./plugins"
-import authConfig from "./config/auth"
+import authScheme from "./config/auth"
 
 const server = new Server()
 
@@ -24,8 +24,8 @@ server.connection({
 server.register(plugins, error => {
   if (error) throw error
 
-  server.auth.strategy("jwt", "jwt", authConfig)
-  server.auth.default("jwt")
+  server.auth.scheme("custom", authScheme)
+  server.auth.strategy("default", "custom", "required")
 
   server.route(routes)
 })

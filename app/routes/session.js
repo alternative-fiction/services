@@ -1,9 +1,6 @@
 import User from "../models/user"
-import createRedisClient from "redis-connection"
 import unknownError from "../lib/unknown-error"
 import {createAuth} from "../config/auth"
-
-const redisClient = createRedisClient()
 
 const auth = {
   config: {auth: false},
@@ -20,12 +17,10 @@ const auth = {
       .then(user => {
         if (!user.authenticate(password)) return reply.unauthorized()
 
-        const {session, token} = createAuth(user)
-
-        redisClient.set(session.uuid, JSON.stringify(session))
+        const auth = createAuth(user)
 
         reply(user.serialize(null, {revealPrivateAttributes: true}))
-          .header("Authorization", token)
+          .header("Authorization", auth)
           .header("Access-Control-Expose-Headers", "Authorization")
       })
       .catch(User.NotFoundError, () => reply.notFound("User not found"))
@@ -33,16 +28,6 @@ const auth = {
   }
 }
 
-const unauth = {
-  method: "POST",
-  path: "/unauth",
-  handler({auth}, reply) {
-    redisClient.del(auth.credentials.uuid)
-    reply().code(204)
-  }
-}
-
 export default [
-  auth,
-  unauth
+  auth
 ]

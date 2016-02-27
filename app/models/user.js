@@ -3,6 +3,10 @@ import {createModel} from "./base"
 import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
+  defaults: {
+    role: "user",
+    username: "Anonymous"
+  },
   hasSecurePassword: "passwordDigest",
   isAuthorized(userUuid) {
     return this.get("uuid") === userUuid
