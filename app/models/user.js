@@ -14,7 +14,7 @@ export default registerModel("User", createModel({
   serialize(request, {revealPrivateAttributes = false} = {}) {
     return {
       bio: this.get("bio") || "",
-      email: revealPrivateAttributes ? this.get("email") || "" : "",
+      email: revealPrivateAttributes && this.get("email") || "",
       createdAt: this.get("createdAt"),
       storiesCount: parseInt(this.get("storiesCount") || 0, 10),
       updatedAt: this.get("updatedAt"),

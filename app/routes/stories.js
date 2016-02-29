@@ -10,7 +10,7 @@ const index = {
     new Stories()
       .query(qb => qb.orderBy("updatedAt", "desc"))
       .fetch({
-        columns: ["createdAt", "description", "title", "updatedAt", "uuid"]
+        columns: ["createdAt", "description", "title", "updatedAt", "userUuid", "uuid"]
       })
       .then(records => reply(records))
       .catch(unknownError(reply))
