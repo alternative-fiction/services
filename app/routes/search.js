@@ -19,7 +19,7 @@ export default [{
           FROM stories, plainto_tsquery('${criteria}') AS q WHERE (tsv @@ q)
         ) AS t1 ORDER BY ts_rank_cd(t1.tsv, plainto_tsquery('${criteria}')) DESC LIMIT 50;
       `)
-      .then(({rows}) => reply({results: rows}))
+      .then(({rows}) => reply(rows))
       .catch(unknownError(reply))
   }
 }]

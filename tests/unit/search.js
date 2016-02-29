@@ -62,10 +62,10 @@ experiment("Stories search", () => {
       url: "/search"
     }
 
-    server.inject(options, ({statusCode, result: {results}}) => {
+    server.inject(options, ({statusCode, result}) => {
       expect(statusCode).to.equal(200)
 
-      expect(results[0].uuid).to.equal(uuid)
+      expect(result[0].uuid).to.equal(uuid)
 
       server.stop(done)
     })
