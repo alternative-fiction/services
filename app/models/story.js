@@ -3,14 +3,19 @@ import {createModel} from "./base"
 import bookshelf, {registerModel} from "../lib/bookshelf"
 import {uniq} from "lodash"
 
-const defaultMeta = {
-  tags: []
-}
-const acceptableMetaKeys = Object.keys(defaultMeta)
+const acceptableMetaKeys = ["tags"]
 const tagLimit = 10
 
 export default registerModel("Story", createModel({
   initialize() {
+    this.on("creating", (model, {meta}) => {
+      if (meta && meta.tags) return
+
+      model.set("meta", {
+        tags: []
+      })
+    })
+
     this.on("saving", (model, {meta}) => {
       if (!(meta && meta.tags)) return
 
@@ -26,7 +31,7 @@ export default registerModel("Story", createModel({
       body: this.get("body") || "",
       createdAt: this.get("createdAt"),
       description: this.get("description") || "",
-      meta: this.get("meta") || defaultMeta,
+      meta: this.get("meta"),
       published: this.get("published"),
       title: this.get("title") || "",
       updatedAt: this.get("updatedAt"),
