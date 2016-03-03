@@ -39,11 +39,11 @@ const baseModel = bookshelf.Model.extend({
   },
   validations: {}
 }, {
-  authorize: Bluebird.method(function authorize(attributes, userUuid) {
+  authorize: Bluebird.method(function authorize(attributes, credential) {
     return new this(attributes)
       .fetch({require: true})
       .tap(model => {
-        if (!model.isAuthorized(userUuid)) throw Boom.create(401)
+        if (!model.isAuthorized(credential)) throw Boom.create(401)
       })
   }),
   notFoundHandler(reply, uuid = "unknown") {
