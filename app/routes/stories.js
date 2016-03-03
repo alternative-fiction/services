@@ -41,7 +41,11 @@ const create = {
 
     new Story()
       .save(payload)
-      .then(reply)
+      .then(model => {
+        return model
+          .fetch({withRelated: ["user"]})
+          .then(reply)
+      })
       .catch(Story.NoRowsUpdatedError, error => reply.badRequest(error))
       .catch(unknownError(reply))
   }

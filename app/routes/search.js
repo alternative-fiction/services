@@ -23,7 +23,8 @@ export default [{
         new Stories()
           .query("where", "uuid", "IN", rows.map(row => row.uuid).join(", "))
           .fetch({
-            columns: ["description", "meta", "title", "userUuid", "uuid"]
+            columns: ["description", "meta", "title", "userUuid", "uuid"],
+            withRelated: ["user"]
           })
           .then(reply)
       })

@@ -4,8 +4,7 @@ import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
   defaults: {
-    role: "user",
-    username: "Anonymous"
+    role: "user"
   },
   hasSecurePassword: "passwordDigest",
   isAuthorized(userUuid) {
@@ -18,7 +17,7 @@ export default registerModel("User", createModel({
       createdAt: this.get("createdAt"),
       storiesCount: parseInt(this.get("storiesCount") || 0, 10),
       updatedAt: this.get("updatedAt"),
-      username: this.get("username") || "Anonymous",
+      username: this.get("username"),
       uuid: this.get("uuid")
     }
   },

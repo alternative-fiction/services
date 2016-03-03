@@ -10,7 +10,7 @@ const story = createStoryMock()
 
 experiment("Stories search", () => {
   let authorization
-  let userUuid
+  let username
   let uuid
 
   test("Create user for further tests.", done => {
@@ -28,7 +28,7 @@ experiment("Stories search", () => {
       expect(result.bio).to.equal(user.bio)
 
       authorization = headers.authorization
-      userUuid = result.uuid
+      username = result.username
 
       server.stop(done)
     })
@@ -70,7 +70,7 @@ experiment("Stories search", () => {
       const [entry] = result
 
       expect(entry.uuid).to.equal(uuid)
-      expect(entry.userUuid).to.equal(userUuid)
+      expect(entry.user.username).to.equal(username)
       story.meta.tags.forEach((tag, i) => expect(entry.meta.tags[i]).to.equal(tag))
 
       server.stop(done)
