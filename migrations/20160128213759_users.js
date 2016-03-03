@@ -19,6 +19,7 @@ exports.up = function(knex) {
       .defaultTo("")
 
     t.specificType("username", "citext")
+      .notNullable()
       .unique()
       .index()
 
