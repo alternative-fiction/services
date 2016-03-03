@@ -1,8 +1,10 @@
 {
   "env": {
+    "es6": true,
     "node": true
   },
   "extends": "eslint:recommended",
+  "ecmaVersion": 6,
   "globals": {},
   "parser": "babel-eslint",
   "plugins": [],
@@ -32,7 +34,7 @@
     "dot-notation": 1,
     "eol-last": 1,
     "eqeqeq": [2, "allow-null"],
-    "indent": [1, 2, {
+    "indent": [2, 2, {
       "SwitchCase": 1,
       "VariableDeclarator": 1
     }],
@@ -41,6 +43,7 @@
       "beforeColon": false,
       "mode": "strict"
     }],
+    "keyword-spacing": [1],
     "jsx-quotes": [1, "prefer-double"],
     "linebreak-style": [2, "unix"],
     "max-nested-callbacks": [1, 6],
@@ -84,7 +87,7 @@
       "WithStatement"
     ],
     "no-redeclare": 2,
-    "no-return-assign": 2,
+    "no-return-assign": 0,
     "no-script-url": 2,
     "no-self-compare": 2,
     "no-sequences": 2,
@@ -96,7 +99,6 @@
     "no-undef-init": 2,
     "no-undefined": 2,
     "no-unexpected-multiline": 2,
-    "no-unreachable": 1,
     "no-unused-vars": 1,
     "no-use-before-define": 2,
     "no-useless-call": 1,
@@ -126,13 +128,8 @@
       "after": true,
       "before": false
     }],
-    "space-after-keywords": [1, "always"],
-    "space-before-keywords": [1, "always"],
-    "space-before-blocks": [1, "always"],
-    "space-before-function-paren": [1, "never"],
     "space-in-parens": [1, "never"],
     "space-infix-ops": [1],
-    "space-return-throw-case": [1],
     "space-unary-ops": [1],
     "spaced-comment": [1, "always"],
     "yoda": [1, "never", {
