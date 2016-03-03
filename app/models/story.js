@@ -35,7 +35,6 @@ export default registerModel("Story", createModel({
       published: this.get("published"),
       title: this.get("title") || "",
       updatedAt: this.get("updatedAt"),
-      userUuid: this.get("userUuid"),
       user: this.related("user").serialize(),
       uuid: this.get("uuid")
     }
