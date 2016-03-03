@@ -13,7 +13,7 @@ const altUser = createUserMock()
 experiment("Users", () => {
   let authorization
   let altAuthorization
-  let uuid
+  let username
 
   test("Create", done => {
     const options = {
@@ -26,7 +26,7 @@ experiment("Users", () => {
       expect(statusCode).to.equal(200)
       expect(headers.authorization).to.exist()
 
-      uuid = result.uuid
+      username = result.username
       authorization = headers.authorization
 
       expect(result.username).to.equal(user.username)
@@ -56,7 +56,7 @@ experiment("Users", () => {
   test("Retrieve", done => {
     const options = {
       method: "GET",
-      url: `/users/${uuid}`
+      url: `/users/${username}`
     }
 
     server.inject(options, ({result, statusCode}) => {
@@ -78,7 +78,7 @@ experiment("Users", () => {
         bio: "updated bio",
         email: chance.email()
       },
-      url: `/users/${uuid}`
+      url: `/users/${username}`
     }
 
     server.inject(options, ({result, statusCode}) => {
@@ -98,7 +98,7 @@ experiment("Users", () => {
       payload: {
         bio: "unauthorized updated bio"
       },
-      url: `/users/${uuid}`
+      url: `/users/${username}`
     }
 
     server.inject(options, ({statusCode}) => {
@@ -112,7 +112,7 @@ experiment("Users", () => {
     const options = {
       headers: {authorization: altAuthorization},
       method: "DELETE",
-      url: `/users/${uuid}`
+      url: `/users/${username}`
     }
 
     server.inject(options, ({statusCode}) => {
@@ -126,7 +126,7 @@ experiment("Users", () => {
     const options = {
       headers: {authorization},
       method: "DELETE",
-      url: `/users/${uuid}`
+      url: `/users/${username}`
     }
 
     server.inject(options, ({statusCode}) => {
