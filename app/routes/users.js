@@ -22,11 +22,11 @@ const index = {
 const show = {
   config: {auth: false},
   method: "GET",
-  path: "/users/{username}",
-  handler({params: {username}}, reply) {
+  path: "/users/{uuid}",
+  handler({params: {uuid}}, reply) {
     const Stories = bookshelf.collection("Stories")
 
-    new User({username})
+    new User({uuid})
       .where({status: "active"})
       .fetch({
         withRelated: ["stories"],
@@ -34,14 +34,14 @@ const show = {
       })
       .then(user => {
         new Stories()
-          .query("where", "userUuid", "=", user.get("uuid"))
+          .query("where", "userUuid", "=", uuid)
           .count()
           .then(storiesCount => {
             user.set("storiesCount", storiesCount)
             reply(user)
           })
       })
-      .catch(User.NotFoundError, () => reply.notFound(`Username ${username} not found.`))
+      .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }
@@ -69,38 +69,38 @@ const create = {
 
 const update = {
   method: "PATCH",
-  path: "/users/{username}",
-  handler({auth, params: {username}, payload}, reply) {
+  path: "/users/{uuid}",
+  handler({auth, params: {uuid}, payload}, reply) {
     payload = payload || {}
 
     const {userUuid} = auth.credentials
 
-    User.authorize({username}, userUuid)
+    User.authorize({uuid}, userUuid)
       .then(model => {
         return model
           .save(payload, {require: true, patch: true})
           .then(updatedUser => reply(updatedUser.serialize(null, {revealPrivateAttributes: true})))
       })
       .catch(User.NoRowsUpdatedError, error => reply.badRequest(error))
-      .catch(User.NotFoundError, User.notFoundHandler(reply, username))
+      .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }
 
 const destroy = {
   method: "DELETE",
-  path: "/users/{username}",
-  handler({auth, params: {username}}, reply) {
+  path: "/users/{uuid}",
+  handler({auth, params: {uuid}}, reply) {
     const {userUuid} = auth.credentials
 
-    User.authorize({username}, userUuid)
+    User.authorize({uuid}, userUuid)
       .then(model => {
         model
           .save({status: "inactive"}, {require: true})
           .then(() => reply().code(204))
       })
-      .catch(User.NoRowsDeletedError, () => reply.notFound(`Username ${username} not found.`))
-      .catch(User.NotFoundError, User.notFoundHandler(reply, username))
+      .catch(User.NoRowsDeletedError, User.notFoundHandler(reply, uuid))
+      .catch(User.NotFoundError, User.notFoundHandler(reply, uuid))
       .catch(unknownError(reply))
   }
 }

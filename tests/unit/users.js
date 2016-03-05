@@ -15,7 +15,7 @@ const story = createStoryMock()
 experiment("Users", () => {
   let authorization
   let altAuthorization
-  let username
+  let uuid
 
   test("Create", done => {
     const options = {
@@ -28,11 +28,11 @@ experiment("Users", () => {
       expect(statusCode).to.equal(200)
       expect(headers.authorization).to.exist()
 
-      username = result.username
-      authorization = headers.authorization
-
-      expect(result.username).to.equal(user.username)
+      expect(result.email).to.equal(user.email)
       expect(result.bio).to.equal(user.bio)
+
+      uuid = result.uuid
+      authorization = headers.authorization
 
       server.stop(done)
     })
@@ -73,14 +73,14 @@ experiment("Users", () => {
   test("Retrieve", done => {
     const options = {
       method: "GET",
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({result, statusCode}) => {
       expect(statusCode).to.equal(200)
 
       expect(result.email).to.not.equal(user.email)
-      expect(result.username).to.equal(user.username)
+      expect(result.uuid).to.equal(uuid)
       expect(result.bio).to.equal(user.bio)
 
       expect(result.storiesCount).to.equal(1)
@@ -97,7 +97,7 @@ experiment("Users", () => {
         bio: "updated bio",
         email: chance.email()
       },
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({result, statusCode}) => {
@@ -117,7 +117,7 @@ experiment("Users", () => {
       payload: {
         bio: "unauthorized updated bio"
       },
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({statusCode}) => {
@@ -131,7 +131,7 @@ experiment("Users", () => {
     const options = {
       headers: {authorization: altAuthorization},
       method: "DELETE",
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({statusCode}) => {
@@ -145,7 +145,7 @@ experiment("Users", () => {
     const options = {
       headers: {authorization},
       method: "DELETE",
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({statusCode}) => {
@@ -158,7 +158,7 @@ experiment("Users", () => {
   test("Retrieve error (inactive)", done => {
     const options = {
       method: "GET",
-      url: `/users/${username}`
+      url: `/users/${uuid}`
     }
 
     server.inject(options, ({statusCode}) => {
