@@ -2,26 +2,23 @@ import Stories from "../collections/stories"
 import Story from "../models/story"
 import unknownError from "../lib/unknown-error"
 
+const indexColumns = ["createdAt", "description", "meta", "published", "title", "updatedAt", "userUuid", "uuid"]
+
 const index = {
   config: {auth: false},
   method: "GET",
   path: "/stories",
   handler({query: {userUuid}}, reply) {
-    let query
-
-    if (userUuid) {
-      query = qb => qb
-        .where({userUuid})
-        .orderBy("updatedAt", "desc")
-    }
-    else {
-      query = qb => qb.orderBy("updatedAt", "desc")
-    }
+    const wrapQuery = userUuid ? qb => qb.andWhere("users.uuid", "=", userUuid) : qb => qb
 
     new Stories()
-      .query(query)
+      .query(qb => wrapQuery(qb)
+        .innerJoin("users", "stories.userUuid", "users.uuid")
+        .where("users.status", "=", "active")
+        .orderBy("updatedAt", "desc")
+      )
       .fetch({
-        columns: ["createdAt", "description", "meta", "title", "updatedAt", "userUuid", "uuid"],
+        columns: indexColumns.map(bar => `stories.${bar}`),
         withRelated: ["user"]
       })
       .then(records => reply(records))
@@ -35,6 +32,10 @@ const show = {
   path: "/stories/{uuid}",
   handler({params: {uuid}}, reply) {
     new Story({uuid})
+      .query(qb => qb
+        .innerJoin("users", "stories.userUuid", "users.uuid")
+        .where("users.status", "=", "active")
+      )
       .fetch({require: true, withRelated: ["user"]})
       .then(reply)
       .catch(Story.NotFoundError, () => reply.notFound(`Story ID ${uuid} not found.`))

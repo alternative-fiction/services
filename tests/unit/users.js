@@ -16,6 +16,7 @@ experiment("Users", () => {
   let authorization
   let altAuthorization
   let uuid
+  let storyUuid
 
   test("Create", done => {
     const options = {
@@ -46,9 +47,10 @@ experiment("Users", () => {
       url: "/stories"
     }
 
-    server.inject(options, ({statusCode}) => {
+    server.inject(options, ({statusCode, result}) => {
       expect(statusCode).to.equal(200)
 
+      storyUuid = result.uuid
       server.stop(done)
     })
   })
@@ -155,7 +157,22 @@ experiment("Users", () => {
     })
   })
 
-  test("Retrieve error (inactive)", done => {
+  test("Update error (user inactive)", done => {
+    const options = {
+      headers: {authorization},
+      method: "PATCH",
+      payload: {status: "active"},
+      url: `/users/${uuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(401)
+
+      server.stop(done)
+    })
+  })
+
+  test("Retrieve user error (inactive)", done => {
     const options = {
       method: "GET",
       url: `/users/${uuid}`
@@ -168,7 +185,20 @@ experiment("Users", () => {
     })
   })
 
-  test("Retrieve error (not found)", done => {
+  test("Retrieve story error (user inactive)", done => {
+    const options = {
+      method: "GET",
+      url: `/stories/${storyUuid}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(404)
+
+      server.stop(done)
+    })
+  })
+
+  test("Retrieve user error (not found)", done => {
     const options = {
       method: "GET",
       url: `/users/${uniqueId()}`

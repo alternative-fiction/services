@@ -4,12 +4,14 @@ import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
   defaults: {
-    role: "user",
-    status: "active"
+    role: "user"
   },
   hasSecurePassword: "passwordDigest",
+  initialize() {
+    this.on("creating", model => model.set("status", "active"))
+  },
   isAuthorized(userUuid) {
-    return this.get("uuid") === userUuid
+    return this.get("uuid") === userUuid && this.get("status") === "active"
   },
   serialize(request, {revealPrivateAttributes = false} = {}) {
     return {
