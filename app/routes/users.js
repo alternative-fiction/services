@@ -10,7 +10,9 @@ const index = {
   path: "/users",
   handler({params}, reply) {
     new Users()
-      .query(qb => qb.orderBy("createdAt", "desc"))
+      .query(qb => qb
+        .where({status: "active"})
+        .orderBy("createdAt", "desc"))
       .fetch()
       .then(records => reply(records))
       .catch(unknownError(reply))
@@ -25,7 +27,11 @@ const show = {
     const Stories = bookshelf.collection("Stories")
 
     new User({username})
-      .fetch({require: true})
+      .where({status: "active"})
+      .fetch({
+        withRelated: ["stories"],
+        require: true
+      })
       .then(user => {
         new Stories()
           .query("where", "userUuid", "=", user.get("uuid"))
@@ -90,7 +96,7 @@ const destroy = {
     User.authorize({username}, userUuid)
       .then(model => {
         model
-          .destroy({require: true})
+          .save({status: "inactive"}, {require: true})
           .then(() => reply().code(204))
       })
       .catch(User.NoRowsDeletedError, () => reply.notFound(`Username ${username} not found.`))

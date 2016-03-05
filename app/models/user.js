@@ -4,7 +4,8 @@ import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
   defaults: {
-    role: "user"
+    role: "user",
+    status: "active"
   },
   hasSecurePassword: "passwordDigest",
   isAuthorized(userUuid) {

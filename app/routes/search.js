@@ -21,7 +21,7 @@ export default [{
       `)
       .then(({rows}) => {
         new Stories()
-          .query("where", "uuid", "IN", rows.map(row => row.uuid).join(", "))
+          .query(qb => qb.whereIn("uuid", rows.map(row => row.uuid)))
           .fetch({
             columns: ["description", "meta", "title", "userUuid", "uuid"],
             withRelated: ["user"]

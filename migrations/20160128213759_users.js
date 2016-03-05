@@ -27,6 +27,10 @@ exports.up = function(knex) {
       .defaultTo("user")
       .index()
 
+    t.string("status")
+      .defaultTo("active")
+      .index()
+
     t.timestamp("createdAt")
       .notNullable()
       .defaultTo(knex.fn.now())

@@ -6,9 +6,20 @@ const index = {
   config: {auth: false},
   method: "GET",
   path: "/stories",
-  handler({params}, reply) {
+  handler({query: {userUuid}}, reply) {
+    let query
+
+    if (userUuid) {
+      query = qb => qb
+        .where({userUuid})
+        .orderBy("updatedAt", "desc")
+    }
+    else {
+      query = qb => qb.orderBy("updatedAt", "desc")
+    }
+
     new Stories()
-      .query(qb => qb.orderBy("updatedAt", "desc"))
+      .query(query)
       .fetch({
         columns: ["createdAt", "description", "meta", "title", "updatedAt", "userUuid", "uuid"],
         withRelated: ["user"]

@@ -4,11 +4,13 @@ import {expect} from "code"
 import server from "../../app"
 import uniqueId from "../../app/lib/unique-id"
 import createUserMock from "../mocks/user"
+import createStoryMock from "../mocks/story"
 
 const chance = new Chance()
 const {experiment, test} = exports.lab = Lab.script()
 const user = createUserMock()
 const altUser = createUserMock()
+const story = createStoryMock()
 
 experiment("Users", () => {
   let authorization
@@ -31,6 +33,21 @@ experiment("Users", () => {
 
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
+
+      server.stop(done)
+    })
+  })
+
+  test("Create user's story", done => {
+    const options = {
+      headers: {authorization},
+      method: "POST",
+      payload: story,
+      url: "/stories"
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(200)
 
       server.stop(done)
     })
@@ -65,6 +82,8 @@ experiment("Users", () => {
       expect(result.email).to.not.equal(user.email)
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
+
+      expect(result.storiesCount).to.equal(1)
 
       server.stop(done)
     })
@@ -136,7 +155,20 @@ experiment("Users", () => {
     })
   })
 
-  test("Retrieve (error)", done => {
+  test("Retrieve error (inactive)", done => {
+    const options = {
+      method: "GET",
+      url: `/users/${username}`
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(404)
+
+      server.stop(done)
+    })
+  })
+
+  test("Retrieve error (not found)", done => {
     const options = {
       method: "GET",
       url: `/users/${uniqueId()}`

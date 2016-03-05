@@ -14,6 +14,7 @@ experiment("Stories", () => {
   let authorization
   let storyUuid
   let username
+  let userUuid
   let altAuthorization
 
   test("Create user for further tests.", done => {
@@ -29,6 +30,7 @@ experiment("Stories", () => {
 
       authorization = headers.authorization
       username = result.username
+      userUuid = result.uuid
 
       expect(result.username).to.equal(user.username)
       expect(result.bio).to.equal(user.bio)
@@ -78,7 +80,7 @@ experiment("Stories", () => {
     })
   })
 
-  test("Retrieve", done => {
+  test("Retrieve entry", done => {
     const options = {
       method: "GET",
       url: `/stories/${storyUuid}`
@@ -94,6 +96,25 @@ experiment("Stories", () => {
       expect(result.user.username).to.equal(username)
 
       story.meta.tags.forEach((tag, i) => expect(result.meta.tags[i]).to.equal(tag))
+
+      server.stop(done)
+    })
+  })
+
+  test("Retrieve Entries", done => {
+    const options = {
+      method: "GET",
+      url: `/stories?userUuid=${userUuid}`
+    }
+
+    server.inject(options, ({statusCode, result}) => {
+      expect(statusCode).to.equal(200)
+
+      const [entry] = result
+
+      expect(result.length).to.equal(1)
+      expect(entry.uuid).to.equal(storyUuid)
+      expect(entry.user.username).to.equal(username)
 
       server.stop(done)
     })
