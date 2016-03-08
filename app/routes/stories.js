@@ -15,6 +15,7 @@ const index = {
       .query(qb => wrapQuery(qb)
         .innerJoin("users", "stories.userUuid", "users.uuid")
         .where("users.status", "=", "active")
+        .limit(100)
         .orderBy("updatedAt", "desc")
       )
       .fetch({
