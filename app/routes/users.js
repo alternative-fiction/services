@@ -12,6 +12,7 @@ const index = {
     new Users()
       .query(qb => qb
         .where({status: "active"})
+        .limit(100)
         .orderBy("createdAt", "desc"))
       .fetch()
       .then(records => reply(records))
