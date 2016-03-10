@@ -20,7 +20,7 @@ const authorizedHeartbeat = {
       .fetch({require: true})
       .then(user => {
         return reply({
-          message: `${(new Date()).toLocaleTimeString()}: Hello there, ${user.get("username")}`,
+          message: `${(new Date()).toLocaleTimeString()}: Hello there, ${user.get("displayName")}, ${user.get("uuid")}`,
           statusCode: 200
         })
       })

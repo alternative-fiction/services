@@ -15,7 +15,6 @@ const EXPIRATION = 30 * 86400000
 export function createAuth(user) {
   const segments = toPairs({
     createdAt: (new Date()).toISOString(),
-    username: user.get("username"),
     userRole: user.get("role"),
     userUuid: user.get("uuid"),
     uuid: uniqueId(12)

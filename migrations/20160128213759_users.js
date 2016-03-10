@@ -18,9 +18,7 @@ exports.up = function(knex) {
       .notNullable()
       .defaultTo("")
 
-    t.specificType("username", "citext")
-      .notNullable()
-      .unique()
+    t.specificType("displayName", "citext")
       .index()
 
     t.string("role")

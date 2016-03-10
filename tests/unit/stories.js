@@ -13,7 +13,7 @@ const story = createStoryMock()
 experiment("Stories", () => {
   let authorization
   let storyUuid
-  let username
+  let displayName
   let userUuid
   let altAuthorization
 
@@ -29,10 +29,10 @@ experiment("Stories", () => {
       expect(headers.authorization).to.exist()
 
       authorization = headers.authorization
-      username = result.username
+      displayName = result.displayName
       userUuid = result.uuid
 
-      expect(result.username).to.equal(user.username)
+      expect(result.displayName).to.equal(user.displayName)
       expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
@@ -72,7 +72,7 @@ experiment("Stories", () => {
       expect(result.body).to.equal(story.body)
       expect(result.description).to.equal(story.description)
       expect(result.title).to.equal(story.title)
-      expect(result.user.username).to.equal(username)
+      expect(result.user.displayName).to.equal(displayName)
 
       story.meta.tags.forEach((tag, i) => expect(result.meta.tags[i]).to.equal(tag))
 
@@ -93,7 +93,7 @@ experiment("Stories", () => {
       expect(result.description).to.equal(story.description)
       expect(result.title).to.equal(story.title)
 
-      expect(result.user.username).to.equal(username)
+      expect(result.user.displayName).to.equal(displayName)
 
       story.meta.tags.forEach((tag, i) => expect(result.meta.tags[i]).to.equal(tag))
 
@@ -114,7 +114,7 @@ experiment("Stories", () => {
 
       expect(result.length).to.equal(1)
       expect(entry.uuid).to.equal(storyUuid)
-      expect(entry.user.username).to.equal(username)
+      expect(entry.user.displayName).to.equal(displayName)
 
       server.stop(done)
     })

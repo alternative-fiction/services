@@ -24,7 +24,7 @@ experiment("Session", () => {
       expect(headers.authorization).to.exist()
 
       expect(result.email).to.equal(user.email)
-      expect(result.username).to.equal(user.username)
+      expect(result.displayName).to.equal(user.displayName)
       expect(result.bio).to.equal(user.bio)
 
       server.stop(done)
@@ -48,7 +48,7 @@ experiment("Session", () => {
       authorization = headers.authorization
 
       expect(result.email).to.equal(user.email)
-      expect(result.username).to.equal(user.username)
+      expect(result.displayName).to.equal(user.displayName)
 
       server.stop(done)
     })

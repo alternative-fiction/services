@@ -16,11 +16,11 @@ export default registerModel("User", createModel({
   serialize(request, {revealPrivateAttributes = false} = {}) {
     return {
       bio: this.get("bio") || "",
+      displayName: this.get("displayName") || "Anonymous",
       email: revealPrivateAttributes && this.get("email") || "",
       createdAt: this.get("createdAt"),
       storiesCount: parseInt(this.get("storiesCount") || 0, 10),
       updatedAt: this.get("updatedAt"),
-      username: this.get("username"),
       uuid: this.get("uuid")
     }
   },
@@ -31,6 +31,7 @@ export default registerModel("User", createModel({
   },
   tableName: "users",
   validations: {
+    displayName: ["maxLength:60"],
     bio: ["maxLength:254"],
     email: ["required", "email", "maxLength:254", function(email) {
       if (this.persisted && this.previousAttributes().email === email) return
@@ -44,18 +45,6 @@ export default registerModel("User", createModel({
           if (record) throw new ValidationError("The email address is already in use.")
         })
     }],
-    password: ["maxLength:254"],
-    username: ["required", "alphaDash", "maxLength:60", function(username) {
-      if (this.persisted && this.previousAttributes().username === username) return
-
-      const Users = bookshelf.collection("Users")
-
-      return new Users()
-        .query({where: {username}})
-        .fetchOne()
-        .then(record => {
-          if (record) throw new ValidationError("The username is already in use.")
-        })
-    }]
+    password: ["maxLength:254"]
   }
 }))
