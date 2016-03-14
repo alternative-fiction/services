@@ -83,7 +83,7 @@ experiment("Session", () => {
     }
 
     server.inject(options, ({headers, statusCode}) => {
-      expect(statusCode).to.equal(404)
+      expect(statusCode).to.equal(401)
       expect(headers.authorization).to.not.exist()
 
       server.stop(done)

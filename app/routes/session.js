@@ -10,7 +10,7 @@ const auth = {
     const email = (payload.email || "").trim()
     const password = payload.password || ""
 
-    if (email.length === 0 || password.length === 0) return reply.unauthorized()
+    if (email.length === 0 || password.length === 0) return reply.unauthorized("Invalid credentials.")
 
     new User({email})
       .fetch({require: true})
@@ -23,7 +23,7 @@ const auth = {
           .header("Authorization", auth)
           .header("Access-Control-Expose-Headers", "Authorization")
       })
-      .catch(User.NotFoundError, () => reply.notFound("User not found"))
+      .catch(User.NotFoundError, () => reply.unauthorized("An account couldn't be found with the given credentials."))
       .catch(unknownError(reply))
   }
 }

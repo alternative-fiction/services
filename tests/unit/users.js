@@ -210,4 +210,18 @@ experiment("Users", () => {
       server.stop(done)
     })
   })
+
+  test("Create user error (no password)", done => {
+    const options = {
+      method: "POST",
+      payload: {...createUserMock(), password: ""},
+      url: "/users"
+    }
+
+    server.inject(options, ({statusCode}) => {
+      expect(statusCode).to.equal(400)
+
+      server.stop(done)
+    })
+  })
 })

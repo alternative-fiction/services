@@ -1,5 +1,6 @@
-import bookshelf, {registerModel} from "../lib/bookshelf"
+import Boom from "boom"
 import {createModel} from "./base"
+import bookshelf, {registerModel} from "../lib/bookshelf"
 import {ValidationError} from "checkit"
 
 export default registerModel("User", createModel({
@@ -9,6 +10,12 @@ export default registerModel("User", createModel({
   hasSecurePassword: "passwordDigest",
   initialize() {
     this.on("creating", model => model.set("status", "active"))
+
+    this.on("saving", (model, {password}) => {
+      // The `password` attribute is virtual and can't be detected by validations.
+      if (!this.persisted && !password) throw Boom.create(400, "Password required.")
+      if (password && password.length > 254) throw Boom.create(400, "Password must be under 254 characters.")
+    })
   },
   isAuthorized(userUuid) {
     return this.get("uuid") === userUuid && this.get("status") === "active"
@@ -44,7 +51,6 @@ export default registerModel("User", createModel({
         .then(record => {
           if (record) throw new ValidationError("The email address is already in use.")
         })
-    }],
-    password: ["maxLength:254"]
+    }]
   }
 }))
