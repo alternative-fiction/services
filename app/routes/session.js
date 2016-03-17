@@ -15,7 +15,7 @@ const auth = {
     new User({email})
       .fetch({require: true})
       .then(user => {
-        if (!user.authenticate(password)) return reply.unauthorized()
+        if (!user.authenticate(password)) return reply.unauthorized("Invalid credentials.")
 
         const auth = createAuth(user)
 
