@@ -67,6 +67,11 @@ const create = {
 const update = {
   method: "PATCH",
   path: "/stories/{uuid}",
+  config: {
+    payload: {
+      maxBytes: 3145728 // 3 MB
+    }
+  },
   handler({auth, params: {uuid}, payload}, reply) {
     const {userUuid} = auth.credentials
 
